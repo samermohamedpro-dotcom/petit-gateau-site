@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20260911-2332">
+<meta name="pg-build" content="20260914-0102">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1809,6 +1809,61 @@
       .hero-track > .hero-box{grid-row:1 / -1;grid-template-rows:subgrid;}
     }
   }
+
+  /* ================= LES NOUVEAUTÉS — 14/09/2026 =================
+     Le Petit Cookies entre au menu et Samer veut « attirer l'œil dessus ».
+     La pastille reprend celle des familles du premier écran (corail plein,
+     texte crème, collée un peu de travers, liseré blanc) : la cliente la
+     connaît déjà, elle se lit comme une étiquette de la maison et non comme
+     une promo. Posée sur la photo, en haut, là où l'œil entre dans la fiche.
+     La classe et la pastille sont posées par build2.py § 13 bis. */
+  .menu-card .new-badge{
+    position:absolute;top:10px;inset-inline-start:10px;z-index:2;margin:0;
+    padding:4px 12px;border-radius:999px;font-family:var(--police);
+    font-size:0.78rem;font-weight:800;line-height:1.3;letter-spacing:0;
+    background:var(--coral);color:var(--cream);transform:rotate(-3deg);
+    box-shadow:0 0 0 3px #fff,0 6px 14px -9px rgba(94,22,34,0.5);
+    pointer-events:none;
+  }
+
+  /* La fiche nouvelle en BANDEAU, en tête du menu — choix « B » de Samer,
+     14/09/2026, sur trois variantes comparées à 390 et 1440 px :
+     A, la neuvième fiche à la suite, restait SEULE sur la dernière ligne à
+     toutes les largeurs (verif-mise-en-page.mjs la refusait déjà) ; C, une
+     grande photo sur toute la largeur, attirait l'œil mais repoussait le reste
+     du menu d'un demi-écran. Le bandeau prend une ligne entière, photo d'un
+     côté, texte et bouton de l'autre : les huit autres fiches restent par
+     lignes pleines, deux sur téléphone et quatre sur ordinateur.
+
+     `order:-1` la met en tête À L'ÉCRAN quel que soit l'ordre du DOM, que
+     `rangerLeMenu` (checkout.js) réécrit à l'arrivée du catalogue : ni l'app
+     ni le repli ne peuvent la renvoyer en bas. `flex-direction:row` suit la
+     langue — la photo passe à droite sur la page arabe.
+
+     La photo : 46 % en 4:5 sur téléphone (165 × 206 px à 390) ; au-delà de
+     600 px, la ligne s'élargit et une photo 4:5 à 46 % dépassait 500 px de
+     haut — elle passe en 5:4 sur 40 %, puis 32 % sur ordinateur. */
+  .menu-card.is-new{
+    grid-column:1 / -1;order:-1;flex-direction:row;
+    box-shadow:0 0 0 2px var(--coral),0 10px 26px -14px rgba(94,22,34,0.45);
+  }
+  .menu-card.is-new .img-wrap{flex:0 0 46%;aspect-ratio:4/5;}
+  .menu-card.is-new .menu-card-body{justify-content:center;padding:16px;min-width:0;}
+  .menu-card.is-new h3{font-size:1.35rem;}
+  /* Une fiche ordinaire pousse le nombre de pièces en bas (`margin-top:auto`)
+     pour aligner les prix d'une ligne à l'autre. Seul sur sa ligne, le bandeau
+     n'a rien à aligner : à 979 px ça creusait 90 px de vide sous le titre. */
+  .menu-card.is-new .qty-note{margin-top:14px;}
+  @media(min-width:600px){
+    .menu-card.is-new .img-wrap{flex-basis:40%;aspect-ratio:5/4;}
+    .menu-card.is-new .menu-card-body{padding:22px 28px;}
+    .menu-card.is-new h3{font-size:1.6rem;}
+  }
+  @media(min-width:980px){
+    .menu-card.is-new .img-wrap{flex-basis:32%;}
+    .menu-card.is-new .menu-card-body{padding:28px 36px;max-width:560px;}
+    .menu-card.is-new h3{font-size:1.9rem;}
+  }
 </style>
 <script type="application/ld+json">
 {
@@ -1981,6 +2036,19 @@
           "offers": {
             "@type": "Offer",
             "price": "200",
+            "priceCurrency": "QAR",
+            "availability": "https://schema.org/InStock"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Petit Cookies",
+          "alternateName": "كوكيز صغيرة",
+          "description": "Bite-size milk chocolate cookies, 60 pieces.",
+          "image": "https://petit-gateau.com/img/petit-cookies-doha.webp",
+          "offers": {
+            "@type": "Offer",
+            "price": "230",
             "priceCurrency": "QAR",
             "availability": "https://schema.org/InStock"
           }
@@ -2431,6 +2499,24 @@
           <span class="qty-price" dir="ltr">200 QR</span></div>
         </div>
       </div>
+      <div class="menu-card is-new">
+        <div class="img-wrap">
+          <p class="new-badge">New</p>
+          <img src="/img/petit-cookies-doha.webp" srcset="/img/petit-cookies-doha-480.webp 480w, /img/petit-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Bite-size petit cookies with milk chocolate, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item9_name">Petit Cookies</h3>
+          <p class="desc" data-i18n="item9_desc">Bite-size · 60 pieces</p>
+          <p class="allergens" data-allergens="item9" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">60 pieces</span><span class="qty-note-p" dir="ltr">230 QR</span></p>
+        <div class="qty-row" data-item="item9" data-price="230">
+          <button type="button" class="qty-add" data-add="item9"><span>Add</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">230 QR</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -2739,6 +2825,7 @@
       item6_qty:"30 pieces",
       item7_qty:"12 pieces",
       item8_qty:"12 pieces",
+      item9_qty:"60 pieces",
       spread_qty:"1 upside-down peach cake · 12 cookies · 40 petit madeleines",
       majlis4_qty:"12 madeleines · 12 cookies · 1 upside-down peach cake",
       majlis6_qty:"12 cookies · 12 cookies · 1 upside-down peach cake · 12 madeleines",
@@ -2767,6 +2854,7 @@
       item6_name:'Rusk "Shabora"', item6_desc:"Twice-baked, golden & crumbly · 30 pieces",
       item7_name:"Nutella Cookies", item7_desc:"Soft-baked with a molten Nutella centre · dozen",
       item8_name:"Choco Chunk", item8_desc:"Thick milk chocolate chunks, crackled tops · dozen",
+      item9_name:"Petit Cookies", item9_desc:"Bite-size · 60 pieces",
       order_send:"Send Order via WhatsApp",
       order_greeting:"Hi! I'd like to order:", order_total:"Total",
       spread_label:"Taste Everything", spread_title:"The Discovery Box",
@@ -2804,6 +2892,7 @@
       order_continue:"Continue",
       co_title:"Your order",
       lead_badge:"Order now for tomorrow",
+      new_badge:"New",
       co_basket:"Your basket",
       co_day:"Delivery day",
       co_slot:"Time",
@@ -2845,6 +2934,7 @@
       item6_qty:"30 pieces",
       item7_qty:"12 pieces",
       item8_qty:"12 pieces",
+      item9_qty:"60 pieces",
       spread_qty:"1 upside-down peach cake · 12 cookies · 40 petit madeleines",
       majlis4_qty:"12 madeleines · 12 cookies · 1 upside-down peach cake",
       majlis6_qty:"12 cookies · 12 cookies · 1 upside-down peach cake · 12 madeleines",
@@ -2944,6 +3034,7 @@
       item6_qty:"30 قطعة",
       item7_qty:"12 حبة",
       item8_qty:"12 حبة",
+      item9_qty:"60 قطعة",
       spread_qty:"1 كيكة خوخ مقلوبة · 12 كوكيز · 40 مادلين صغيرة",
       majlis4_qty:"12 مادلين · 12 كوكيز · 1 كيكة خوخ مقلوبة",
       majlis6_qty:"12 كوكيز · 12 كوكيز · 1 كيكة خوخ مقلوبة · 12 مادلين",
@@ -2972,6 +3063,7 @@
       item6_name:'رسك "شبورة"', item6_desc:"يُخبز مرتين، ذهبي ومقرمش · 30 قطعة",
       item7_name:"كوكيز نوتيلا", item7_desc:"طري، بقلب نوتيلا ذائب · دزينة",
       item8_name:"كوكيز بقطع الشوكولاتة", item8_desc:"قطع كبيرة من شوكولاتة الحليب، بسطح متشقّق · 12 حبة",
+      item9_name:"كوكيز صغيرة", item9_desc:"بحجم اللقمة · 60 قطعة",
       order_send:"إرسال الطلب عبر واتساب",
       order_greeting:"مرحبًا! أرغب بطلب:", order_total:"المجموع",
       spread_label:"تذوّق كل شيء", spread_title:"صندوق الاكتشاف",
