@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20260916-2229">
+<meta name="pg-build" content="20260918-0021">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2336,7 +2336,7 @@
       </div>
       <div class="hero-dots"><button type="button" class="hero-dot" data-dot="0" aria-label="Show The Discovery Box" aria-current="true"></button><button type="button" class="hero-dot" data-dot="1" aria-label="Show Majlis for 4 +" aria-current="false"></button><button type="button" class="hero-dot" data-dot="2" aria-label="Show Majlis for 6 +" aria-current="false"></button><button type="button" class="hero-dot" data-dot="3" aria-label="Show Majlis for 10 +" aria-current="false"></button></div>
     </div>
-    <p class="delivery-line">Delivered to your door anywhere in Qatar by our driver. Delivery is included in your order and depends on your zone: 15 QR in Al Wakrah, 33 QR in central Doha, 60 QR at The Pearl and Lusail, up to 70 QR in the far north.</p>
+    <p class="delivery-line">Delivered to your door anywhere in Qatar by our driver. Delivery depends on your address — we’ll confirm it with your total on WhatsApp, and you pay once.</p>
   </div>
 </section>
 
@@ -2728,17 +2728,20 @@
       </div>
     </div>
 
+    <!-- UNE seule ligne depuis le 17/09/2026. Il y en avait trois — produits,
+         livraison, total — et la livraison est partie avec l'annonce du tarif
+         (strings.py, « La livraison : une estimation privée »). Sans elle,
+         « Subtotal » et « Total » porteraient le même nombre : on garde le
+         total, et la note dit ce qui s'ajoutera à la confirmation. -->
     <div class="totals">
-      <div class="tl"><span>Subtotal</span><span id="tSub">0 QR</span></div>
-      <div class="tl"><span>Delivery</span><span id="tDeliv">0 QR</span></div>
-      <p class="tl-note">Your zone sets the delivery, by distance: 15 QR in Al Wakrah · 33 QR in central Doha · 60 QR at The Pearl & Lusail · up to 70 QR in the far north — included in your total.</p>
       <div class="tl grand"><span>Total</span><span id="tGrand">0 QR</span></div>
+      <p class="tl-note">Delivery is added when we confirm on WhatsApp. You’ll get one total, and you pay once.</p>
       <p class="pay-info">Pay by Fawran or bank transfer once we confirm your order on WhatsApp.</p>
     </div>
 
     <div class="driver-note">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="6" width="14" height="10" rx="1.5"/><path d="M15 9h4l3 3.5V16h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-      <div><b>About delivery</b>Delivered to your door anywhere in Qatar by our driver. Delivery is included in your order and depends on your zone: 15 QR in Al Wakrah, 33 QR in central Doha, 60 QR at The Pearl and Lusail, up to 70 QR in the far north.</div>
+      <div><b>About delivery</b>Delivered to your door anywhere in Qatar by our driver. Delivery depends on your address — we’ll confirm it with your total on WhatsApp, and you pay once.</div>
     </div>
 
     <div class="fld">
@@ -2944,7 +2947,6 @@
       pick_n:"Choose %s",
       swipe:"Swipe for more",
       co_addr:"Where do we deliver?",
-      co_zoneno:"Zone",
       co_house:"House number",
       co_zoneno_h:"2 or 3 digits",
       co_city_h:"Start typing, we suggest",
@@ -2961,9 +2963,9 @@
       co_loc_paste:"Paste a Google Maps link",
       co_loc_how:"Open Google Maps, hold your finger on the spot, then Share → Copy link. Addresses in Doha are rarely precise — a pin saves the driver a call.",
       co_loc_bad:"That does not look like a map link.",
-      delivery_line:"Delivered to your door anywhere in Qatar by our driver. Delivery is included in your order and depends on your zone: 15 QR in Al Wakrah, 33 QR in central Doha, 60 QR at The Pearl and Lusail, up to 70 QR in the far north.",
+      delivery_line:"Delivered to your door anywhere in Qatar by our driver. Delivery depends on your address — we’ll confirm it with your total on WhatsApp, and you pay once.",
       del_driver_t:"About delivery",
-      co_deliv_h:"Your zone sets the delivery, by distance: 15 QR in Al Wakrah · 33 QR in central Doha · 60 QR at The Pearl & Lusail · up to 70 QR in the far north — included in your total.",
+      co_deliv_h:"Delivery is added when we confirm on WhatsApp. You’ll get one total, and you pay once.",
       hero_eyebrow:"Made in Qatar · Doha",
       hero_title:"From a Qatari home kitchen, today.",
       qatar_t:"Made in Qatar, by Qatari hands.",
@@ -3022,8 +3024,7 @@
       co_m_optin:"Happy to hear about new batches",
       co_m_loc:"Location",
       co_city:"City",
-      co_m_sub:"Subtotal",
-      co_m_deliv:"Delivery"
+      co_zoneno:"Zone"
     },
     ar: {
       item1_qty:"12 حبة",
@@ -3372,14 +3373,26 @@
     var c=0; Object.keys(ORDER).forEach(function(id){ c += ORDER[id]; }); return c;
   }
 
-  /* ---------- la livraison, incluse dans la commande (07/09/2026) ----------
-     Sa femme livre par Snoonu, et la cliente voit le vrai prix de la course à
-     la livraison : le site annonce donc le tarif de SA zone — 15 QR près
-     d'Al Wakrah, 33 QR à Doha, 70 QR au-delà, d'après la carte officielle des
-     zones du Qatar. La table vient de strings.py (CFG.livraison, CFG.cities) :
-     aucun nombre n'est écrit ici. Le numéro de zone décide ; la ville tapée
-     sert de secours quand il n'est pas reconnu (chaque ville porte son
-     tarif) ; sans rien de reconnu, c'est le tarif de Doha. */
+  /* ---------- la livraison : une ESTIMATION, jamais annoncée (17/09/2026) ----
+     Du 07/09 au 17/09/2026 ce calcul décidait ce que la cliente VOYAIT : son
+     tarif de zone, dans son total, et dans son message. Tranché par Samer le
+     17/09/2026 : il ne sort plus vers elle. Snoonu change constamment de prix,
+     la course réelle ne tombait pas sur l'estimation, et la cliente voyait un
+     montant au panier puis un autre à la confirmation — deux envois d'argent
+     pour une commande, alors que le paiement se fait déjà APRÈS confirmation
+     (`co_pay_info`).
+
+     Ce qui reste, et pourquoi : le tarif se calcule toujours, et il part avec
+     le dépôt (`deposer`, champ `livraison`) pour PRÉ-REMPLIR le champ de
+     chiffrage de l'app. Sa femme le corrige d'après ce que Snoonu lui affiche,
+     et c'est son chiffre qui fait le total du message de confirmation.
+     Ce montant ne doit donc JAMAIS être peint dans la page ni écrit dans le
+     message WhatsApp — c'est ce que `tests.mjs` vérifie.
+
+     La table vient de strings.py (CFG.livraison, CFG.cities) : aucun nombre
+     n'est écrit ici. Le numéro de zone décide ; la ville tapée sert de secours
+     quand il n'est pas reconnu (chaque ville porte son tarif) ; sans rien de
+     reconnu, c'est le tarif de Doha. */
   function normVille(s){
     return (s || '').toString().toLowerCase()
       .replace(/[ً-ْـ]/g, '')      // voyelles brèves et tatweel
@@ -3401,18 +3414,21 @@
     if(hits.length === 1) return hits[0];
     return hits.filter(function(c){ return cles(c).some(function(k){ return k === n; }); })[0] || null;
   }
-  function livraison(){
+  // L'ESTIMATION de la course, pour le dépôt seulement. Le nom dit son statut :
+  // ce n'est pas « la livraison », c'est ce que le site croit qu'elle coûtera.
+  function livraisonEstimee(){
     var z = parseInt(($('fZone') ? $('fZone').value : '').replace(/\D/g, ''), 10);
     if(!isNaN(z) && CFG.livraison.zones[String(z)] != null) return CFG.livraison.zones[String(z)];
     var c = villeTapee();
     if(c && c[2] != null) return c[2];
     return CFG.livraison.defaut;
   }
+  // Une seule ligne, le prix des produits. Il n'y a plus ni « Subtotal » ni
+  // « Delivery » (17/09/2026) : sans la course, « sous-total » et « total »
+  // porteraient le même nombre — deux lignes identiques, c'est du bruit. La
+  // ligne sous le montant (`co_deliv_h`) dit ce qui manque encore.
   function peindreTotaux(){
-    var sub = subtotal(), liv = livraison();
-    $('tSub').textContent = sub + ' ' + T('qr');
-    $('tDeliv').textContent = liv + ' ' + T('qr');
-    $('tGrand').textContent = (sub + liv) + ' ' + T('qr');
+    $('tGrand').textContent = subtotal() + ' ' + T('qr');
   }
 
   function refresh(){
@@ -4046,7 +4062,7 @@
 
     remember();
 
-    var sub = subtotal(), liv = livraison();
+    var sub = subtotal(), liv = livraisonEstimee();
     var lines = [];
     Object.keys(ORDER).forEach(function(id){
       if(ORDER[id] > 0){
@@ -4067,9 +4083,13 @@
     m.push('');
     m.push(lines.join('\n'));
     m.push('');
-    m.push(T('co_m_sub') + ': ' + sub + ' ' + T('qr'));
-    m.push(T('co_m_deliv') + ': ' + liv + ' ' + T('qr'));
-    m.push(T('co_m_total') + ': ' + (sub + liv) + ' ' + T('qr'));
+    /* UN SEUL montant, celui des produits (17/09/2026). Les lignes
+       « Subtotal » et « Delivery » sont parties avec l'annonce du tarif : le
+       message ne doit rien dire que la cliente aurait à payer avant que la
+       course soit chiffrée à Doha — sinon c'est le double paiement que cette
+       décision supprime. L'app relit encore les deux libellés pour une
+       commande d'AVANT ce jour-là (`ETIQUETTES`, analyseCommande.js). */
+    m.push(T('co_m_total') + ': ' + sub + ' ' + T('qr'));
     m.push('');
     m.push(T('co_m_when') + ': ' + S.date + ' — ' + T('co_slot_' + S.slot));
     m.push(T('co_m_where') + ': ' + T('co_zoneno') + ' ' + $('fZone').value.trim()
@@ -4212,8 +4232,14 @@
         utmCampaign: txt(UTM.utmCampaign),
         etat: txt('nouvelle'),
         total: num(total),
-        // La course, incluse dans la commande depuis le 07/09/2026 : à part
-        // du total des produits, que l'app compare aux lignes.
+        /* La course ESTIMÉE par la table des zones — le seul endroit où elle
+           sort encore, et il n'est pas public : l'app s'en sert pour
+           pré-remplir le champ que Doha corrige (17/09/2026). Le champ garde
+           son nom `livraison` parce que le renommer demanderait de republier
+           les règles Firestore, donc une fenêtre pendant laquelle tout dépôt
+           repart en 403 — c'est exactement ce qui est arrivé le 07/09/2026.
+           Côté app, `lireEntrante` le nomme `livraisonEstimee`, pour que
+           personne ne le prenne pour ce que la cliente doit payer. */
         livraison: num(course),
         jour: txt(S.date || ''),
         heure: txt(S.slot || ''),
