@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20260918-0114">
+<meta name="pg-build" content="20260918-1522">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -725,6 +725,29 @@
     font-variant-numeric:lining-nums;
     font-feature-settings:'lnum' 1;
   }
+
+  /* ================= UN BOUTON NE ZOOME PAS ================================
+     Samer, le 18/09/2026, sur son iPhone : « quand je double clique sur + ou -
+     ça zoom ».
+
+     Sur iPhone, deux appuis rapprochés au même endroit sont un DOUBLE-TAP, et
+     le double-tap zoome la page. Commander trois madeleines, c'est trois appuis
+     rapprochés sur le même bouton : le geste NORMAL de la commande déclenchait
+     donc le zoom, et il fallait dézoomer à deux doigts pour continuer. C'est le
+     pire endroit possible — le + est ce qu'on touche le plus sur ce site.
+
+     `touch-action:manipulation` garde le défilement et le pincement volontaire,
+     et abandonne le double-tap. L'appui part aussi ~300 ms plus vite : le
+     navigateur n'a plus à attendre de savoir s'il y en aura un second.
+     `-webkit-tap-highlight-color` enlève au passage le rectangle gris que
+     Safari pose sur ce qu'on touche.
+
+     Posé sur TOUS les boutons, pas seulement sur `.qty-btn` : le même geste sur
+     « Ajouter », sur la barre de commande ou sur un bouton à venir aurait le
+     même défaut, et personne ne repenserait à cette ligne.
+     L'app de la maison a cette règle depuis le 04/09/2026 ; le site ne l'avait
+     pas. */
+  button{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 
   /* ================= DÉLAI : une information, pas un refus =================
      Ce badge ne dit pas « indisponible ». Il dit quand c'est prêt. Il est
