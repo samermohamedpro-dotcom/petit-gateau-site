@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20260923-2315">
+<meta name="pg-build" content="20260924-0247">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -369,11 +369,21 @@
     background:var(--cream);border-radius:18px 18px 0 0;
   }
   .sheet-head h3{font-size:1.15rem;color:var(--deep-maroon);}
+  /* Un mot, plus une croix (24/09/2026) : la pilule s'élargit à son texte. */
   .sheet-close{
-    width:36px;height:36px;border-radius:50%;border:none;flex:0 0 auto;
+    height:40px;padding:0 16px;border-radius:999px;border:none;flex:0 0 auto;
     background:rgba(94,22,34,0.08);color:var(--deep-maroon);
-    font-size:1.4rem;line-height:1;cursor:pointer;padding:0;
+    font-family:var(--police);font-size:0.9rem;font-weight:700;line-height:1;cursor:pointer;
   }
+  /* La raison d'un jour impossible, sous le mois (24/09/2026). */
+  .date-chip .why{display:block;margin-top:2px;font-size:0.6rem;font-weight:700;line-height:1.15;color:var(--coral);}
+  /* La pastille d'un jour impossible pâlissait EN ENTIER (0,28–0,3) : sa raison
+     serait devenue illisible. On pâlit le jour et le mois, pas la raison. */
+  .dates .date-chip:disabled,.dates .date-chip.frozen{opacity:1;}
+  .dates .date-chip:disabled > :not(.why),.dates .date-chip.frozen > :not(.why){opacity:0.32;}
+  /* La ligne de livraison passe SOUS le nombre et le total, jamais à côté :
+     sans retour à la ligne, elle se tassait en colonne sur trois lignes. */
+  .order-bar .order-bar-info{flex-wrap:wrap;}
   .sheet-body{flex:1 1 auto;overflow-y:auto;padding:0 20px 20px;-webkit-overflow-scrolling:touch;}
   .sheet-foot{
     flex:0 0 auto;padding:14px 20px calc(14px + env(safe-area-inset-bottom));
@@ -1145,7 +1155,13 @@
   .qty-row.has-qty .qty-btn{display:flex;}
   .qty-row.has-qty .qty-val{display:inline-block;}
   .qty-row.has-qty .qty-add{display:none;}
-  .qty-btn{width:40px;height:40px;}
+  /* 44 px : la cible d'un doigt (Apple, NN/g). Ils faisaient 40 (24/09/2026). */
+  .qty-btn{width:44px;height:44px;flex:none;}
+  /* Un vrai avis sous le nom (build2.py § 10 bis). Un filet corail à
+     l'amorce plutôt qu'un guillemet : il marche dans les deux sens d'écriture. */
+  .avis-fiche{margin:4px 0 10px;padding-inline-start:9px;border-inline-start:3px solid var(--coral);
+    font-family:var(--police);font-size:0.8rem;line-height:1.4;font-weight:500;color:var(--maroon);}
+  .avis-fiche .avis-qui{display:block;margin-top:2px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;color:rgba(94,22,34,0.6);}
   .qty-add{
     display:inline-flex;align-items:center;justify-content:center;gap:6px;
     min-height:40px;padding:0 18px;border-radius:2px;cursor:pointer;
@@ -2404,6 +2420,7 @@
         </div>
         <div class="menu-card-body">
           <h3 data-i18n="item2_name">مادلين صغيرة</h3>
+          <p class="avis-fiche">لحسن الحظ هناك أربعون قطعة!<span class="avis-qui">— H.M.</span></p>
           <p class="desc" data-i18n="item2_desc">بحجم اللقمة · 40 قطعة</p>
           <p class="allergens" data-allergens="item2" hidden></p>
           <p class="qty-note"><span class="qty-note-t">40 قطعة</span><span class="qty-note-p" dir="ltr">190 QR</span></p>
@@ -2441,6 +2458,7 @@
         </div>
         <div class="menu-card-body">
           <h3 data-i18n="item4_name">كيكة الخوخ المقلوبة</h3>
+          <p class="avis-fiche">لم أتوقع أن أحبها إلى هذا الحد.<span class="avis-qui">— N.A.</span></p>
           <p class="desc" data-i18n="item4_desc">خوخ مكرمل، يُخبز حسب الطلب</p>
           <p class="allergens" data-allergens="item4" hidden></p>
           <p class="qty-note"><span class="qty-note-t">كيكة واحدة</span><span class="qty-note-p" dir="ltr">290 QR</span></p>
@@ -2494,6 +2512,7 @@
         </div>
         <div class="menu-card-body">
           <h3 data-i18n="item7_name">كوكيز نوتيلا</h3>
+          <p class="avis-fiche">كوكيز النوتيلا يحتاج إلى تحذير من شدة لذّته.<span class="avis-qui">— A.R.</span></p>
           <p class="desc" data-i18n="item7_desc">طري، بقلب نوتيلا ذائب · 9 حبات</p>
           <p class="allergens" data-allergens="item7" hidden></p>
           <p class="qty-note"><span class="qty-note-t">9 حبات</span><span class="qty-note-p" dir="ltr">200 QR</span></p>
@@ -2653,7 +2672,7 @@
       <span class="order-bar-total" id="orderTotal">0 QR</span>
       <span class="order-bar-sub" id="orderBarSub"></span>
     </div>
-    <button class="order-bar-btn" id="orderSendBtn">متابعة</button>
+    <button class="order-bar-btn" id="orderSendBtn">مراجعة الطلب</button>
   </div>
 </div>
 
@@ -2674,7 +2693,7 @@
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
   <div class="sheet-head">
     <h3 id="sheetTitle">طلبك <svg class="stk stk-cookie stk-inline" aria-hidden="true" focusable="false"><use href="#stk-cookie"/></svg></h3>
-    <button class="sheet-close" id="sheetClose" aria-label="Close">&times;</button>
+    <button class="sheet-close" id="sheetClose">إغلاق</button>
   </div>
 
   <div class="sheet-body">
@@ -2916,7 +2935,7 @@
       footer_copy:"© Petit Gâteau · Made in Qatar, by Qatari hands",
       order_item:"منتج",
       order_items:"منتجات",
-      order_continue:"متابعة",
+      order_continue:"مراجعة الطلب",
       co_title:"طلبك",
       lead_badge:"اطلب الآن لتستلمه غداً",
       new_badge:"جديد",
@@ -3027,6 +3046,10 @@
       hours_block:"بعض الأوقات محجوزة في ذلك اليوم. اختر وقتًا آخر.",
       sameday_block:"رسك “شبورة” وخبز الموز بالزبدة البنية يُخبزان حسب الطلب ويكونان جاهزين من الغد. اختر يومًا لاحقًا لهما — أو احذفهما ونوصّل لك الباقي اليوم.",
       today:"اليوم",
+      day_closed:"مغلق",
+      day_lead:"يُخبز حسب الطلب",
+      day_full:"محجوز بالكامل",
+      co_close:"إغلاق",
       soldout:"غير متاح اليوم",
       co_err_day:"الرجاء اختيار اليوم.",
       co_err_slot:"الرجاء اختيار الوقت.",
@@ -3458,7 +3481,10 @@
   function refresh(){
     var c = count(), sub = subtotal(), active = c > 0;
     $('orderTotal').textContent = sub + ' ' + T('qr');
-    $('orderBarSub').textContent = '';
+    // La règle de livraison, dite dès la barre — avant la feuille, pas au fond
+    // de celle-ci (24/09/2026, option B de la recherche : aucun montant, la
+    // règle du 17/09/2026 intacte). La phrase est celle, déjà validée, du total.
+    $('orderBarSub').textContent = T('co_deliv_h');
     // « 1 items » : le mot suit le nombre.
     var produits = T(c === 1 ? 'order_item' : 'order_items');
     var mot = $('orderItems');
@@ -3626,6 +3652,7 @@
                       : d.toLocaleDateString('en-GB',{weekday:'short'})) + '</small>'
                   + '<b>' + d.getDate() + '</b>'
                   + '<em>' + d.toLocaleDateString('en-GB',{month:'short'}) + '</em>';
+      if(closed) b.innerHTML += '<span class="why">' + T('day_closed') + '</span>';
       b.disabled = closed;
       b.addEventListener('click', function(){
         if(this.disabled) return;
@@ -3704,6 +3731,13 @@
       var shut = !dayOk(iso);
       chip.disabled = shut;
       chip.classList.toggle('frozen', shut);
+      // Sa raison, écrite dessus (24/09/2026). Plein ou heures fermées : « pris »,
+      // jamais pourquoi (`hours_block`). Sinon, si le panier porte un article
+      // à un jour, c'est lui. Sinon — l'heure est simplement passée — rien.
+      var why = chip.querySelector('.why'), dit = '';
+      if(shut) dit = (jourPlein(iso) || jourFermeParHeures(iso)) ? T('day_full') : (blocked() ? T('day_lead') : '');
+      if(dit){ if(!why){ why = document.createElement('span'); why.className = 'why'; chip.appendChild(why); } why.textContent = dit; }
+      else if(why){ why.remove(); }
       if(shut && S.date === iso){ S.date = null; chip.setAttribute('aria-pressed','false'); }
 
       // La pastille de rareté, au moment même du choix.
