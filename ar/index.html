@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20260924-1106">
+<meta name="pg-build" content="20260924-1305">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -375,6 +375,31 @@
     background:rgba(94,22,34,0.08);color:var(--deep-maroon);
     font-family:var(--police);font-size:0.9rem;font-weight:700;line-height:1;cursor:pointer;
   }
+  /* ── Coffrets, direction B (24/09/2026) : la carte résume, l'étape choisit ── */
+  .hero-box .spread-inside,.hero-box .offre-choix{display:none;}
+  .hero-box[data-famille="majlis"] .spread-price em{display:none;}   /* « Majlis for 10+ » le dit déjà */
+  .box-resume{margin:10px 0 0;font-family:var(--police);font-size:0.9rem;line-height:1.45;color:var(--deep-maroon);}
+  .box-resume b{display:block;font-size:0.78rem;font-weight:700;color:var(--vert);margin-bottom:2px;}
+  .box-change{display:none;margin-top:8px;padding:6px 0;border:none;background:none;cursor:pointer;
+    font-family:var(--police);font-size:0.85rem;font-weight:700;color:var(--vert);text-decoration:underline;text-underline-offset:3px;}
+  .hero-box-head .qty-row.has-qty + .box-change{display:inline-block;}
+  .box-sub{margin:0 0 6px;font-family:var(--police);font-size:0.9rem;color:var(--maroon);}
+  .box-fld{padding:12px 0;border-top:1px solid rgba(94,22,34,0.12);}
+  .box-fld:first-child{border-top:none;}
+  .box-fld .fld-label{display:flex;justify-content:space-between;align-items:baseline;}
+  .box-n{font-style:normal;font-weight:800;color:var(--coral);}
+  .box-n.ok{color:var(--vert);}
+  .box-ligne{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0;}
+  .box-nom{font-family:var(--police);font-size:0.95rem;font-weight:500;color:var(--maroon);line-height:1.25;}
+  .box-ligne.on .box-nom{font-weight:700;color:var(--deep-maroon);}
+  .box-nom small{display:block;font-size:0.74rem;font-weight:500;color:rgba(94,22,34,0.6);}
+  .box-pas{display:flex;align-items:center;gap:10px;flex:none;}
+  .box-pas .qty-btn{display:flex;align-items:center;justify-content:center;}
+  .box-pas .qty-btn:disabled{opacity:0.3;cursor:not-allowed;}
+  .box-pas b{min-width:14px;text-align:center;font-family:var(--police);font-size:1.05rem;color:var(--deep-maroon);}
+  .box-fld .chip{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1.15;}
+  .box-fld .chip small{font-size:0.72rem;font-weight:600;opacity:0.75;}
+  .box-go:disabled{opacity:0.45;cursor:not-allowed;}
   /* La raison d'un jour impossible, sous le mois (24/09/2026). */
   .date-chip .why{display:block;margin-top:2px;font-size:0.6rem;font-weight:700;line-height:1.15;color:var(--coral);}
   /* La pastille d'un jour impossible pâlissait EN ENTIER (0,28–0,3) : sa raison
@@ -2195,15 +2220,17 @@
           <h2 data-i18n="spread_title">صندوق الاكتشاف</h2>
           <div class="spread-price"><b dir="ltr">490 QR</b><em>يكفي 3 إلى 4 أشخاص</em></div>
           <div class="qty-row" data-item="spread" data-price="490">
-          <button type="button" class="qty-add" data-add="spread"><span>أضف الصندوق</span></button>
+          <button type="button" class="qty-add" data-add="spread"><span>اختر وأضف</span></button>
             <button class="qty-btn" data-action="dec" aria-label="-">−</button>
             <span class="qty-val">0</span>
             <button class="qty-btn" data-action="inc" aria-label="+">+</button>
           <span class="qty-price" dir="ltr">490 QR</span></div>
+          <button type="button" class="box-change" data-change="spread">غيّر اختياري</button>
         </div>
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="spread_desc">لا تستطيع الاختيار؟ نحن أيضًا. أفضل ما نخبزه في صندوق واحد — يكفي للمشاركة، ولاكتشاف ما تفضّله.</p>
           <p class="allergens" data-allergens="spread" hidden></p>
+          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="spread"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="spread">
@@ -2233,15 +2260,17 @@
           <h2 data-i18n="majlis4_name">مجلس 4 +</h2>
           <div class="spread-price"><b dir="ltr">590 QR</b><em>يكفي 4 أشخاص</em></div>
           <div class="qty-row" data-item="majlis4" data-price="590">
-          <button type="button" class="qty-add" data-add="majlis4"><span>أضف الصندوق</span></button>
+          <button type="button" class="qty-add" data-add="majlis4"><span>اختر وأضف</span></button>
             <button class="qty-btn" data-action="dec" aria-label="-">−</button>
             <span class="qty-val">0</span>
             <button class="qty-btn" data-action="inc" aria-label="+">+</button>
           <span class="qty-price" dir="ltr">590 QR</span></div>
+          <button type="button" class="box-change" data-change="majlis4">غيّر اختياري</button>
         </div>
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">مُعدّ لاستقبال الضيوف — كوكيز، مادلين وكيكة، بالحجم الذي يناسب طاولتك.</p>
           <p class="allergens" data-allergens="majlis4" hidden></p>
+          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="majlis4"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="majlis4">
@@ -2278,15 +2307,17 @@
           <h2 data-i18n="majlis6_name">مجلس 6 +</h2>
           <div class="spread-price"><b dir="ltr">840 QR</b><em>يكفي 6 أشخاص</em></div>
           <div class="qty-row" data-item="majlis6" data-price="840">
-          <button type="button" class="qty-add" data-add="majlis6"><span>أضف الصندوق</span></button>
+          <button type="button" class="qty-add" data-add="majlis6"><span>اختر وأضف</span></button>
             <button class="qty-btn" data-action="dec" aria-label="-">−</button>
             <span class="qty-val">0</span>
             <button class="qty-btn" data-action="inc" aria-label="+">+</button>
           <span class="qty-price" dir="ltr">840 QR</span></div>
+          <button type="button" class="box-change" data-change="majlis6">غيّر اختياري</button>
         </div>
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">مُعدّ لاستقبال الضيوف — كوكيز، مادلين وكيكة، بالحجم الذي يناسب طاولتك.</p>
           <p class="allergens" data-allergens="majlis6" hidden></p>
+          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="majlis6"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="majlis6">
@@ -2325,15 +2356,17 @@
           <h2 data-i18n="majlis10_name">مجلس 10 +</h2>
           <div class="spread-price"><b dir="ltr">990 QR</b><em>يكفي 10 أشخاص</em></div>
           <div class="qty-row" data-item="majlis10" data-price="990">
-          <button type="button" class="qty-add" data-add="majlis10"><span>أضف الصندوق</span></button>
+          <button type="button" class="qty-add" data-add="majlis10"><span>اختر وأضف</span></button>
             <button class="qty-btn" data-action="dec" aria-label="-">−</button>
             <span class="qty-val">0</span>
             <button class="qty-btn" data-action="inc" aria-label="+">+</button>
           <span class="qty-price" dir="ltr">990 QR</span></div>
+          <button type="button" class="box-change" data-change="majlis10">غيّر اختياري</button>
         </div>
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">مُعدّ لاستقبال الضيوف — كوكيز، مادلين وكيكة، بالحجم الذي يناسب طاولتك.</p>
           <p class="allergens" data-allergens="majlis10" hidden></p>
+          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="majlis10"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="majlis10">
@@ -2858,6 +2891,27 @@
   </div>
 </div>
 
+<!-- L'étape « choisir » d'un coffret (24/09/2026, direction B retenue par
+     Samer après comparaison à 390 px) : la carte ne porte plus les choix,
+     on les fait ici au moment d'ajouter. Elle ÉCRIT dans les rangées
+     masquées de la carte, qui restent l'état lu par le panier, le message et
+     l'app. Mêmes classes que la feuille de commande : mêmes pièges déjà
+     réglés (dvh, barre de Safari). -->
+<div class="sheet-veil" id="boxVeil"></div>
+<div class="sheet box-sheet" id="boxSheet" role="dialog" aria-modal="true" aria-labelledby="boxTitle">
+  <div class="sheet-head">
+    <h3 id="boxTitle"></h3>
+    <button class="sheet-close" id="boxClose">إغلاق</button>
+  </div>
+  <div class="sheet-body">
+    <p class="box-sub" id="boxSub"></p>
+    <div id="boxRows"></div>
+  </div>
+  <div class="sheet-foot">
+    <button type="button" class="sheet-send box-go" id="boxGo"><span></span></button>
+  </div>
+</div>
+
 
 <script>
 (function(){
@@ -3017,6 +3071,13 @@
       hero_btn_order:"اطلب الآن",
       hero_btn_menu:"تصفح القائمة",
       hero_box_add:"أضف الصندوق",
+      box_choose_add:"اختر وأضف",
+      box_you_choose:"أنت تختار ما بداخله",
+      box_count:"%s من %s",
+      box_left:"بقي %s للاختيار",
+      box_add:"أضف الصندوق · %s",
+      box_change:"غيّر اختياري",
+      box_done:"تم",
       spread_serves:"يكفي 3 إلى 4 أشخاص",
       hero_box_alt:"صندوق الاكتشاف مفتوحًا: كيكة الخوخ والكوكيز والمادلين الصغيرة، صناعة منزلية في الدوحة",
       majlis_label:"صندوق الضيافة",
@@ -3314,6 +3375,9 @@
     var id = carte.getAttribute('data-offre');
     var quoi = document.querySelector('#picker .pk-line[data-pk="' + id + '"] .pk-what');
     if(quoi) quoi.textContent = QTY(id);
+    // Et le résumé de la carte (24/09/2026), qui remplace la liste à l'écran.
+    var resume = carte.querySelector('[data-resume]');
+    if(resume) resume.textContent = QTY(id);
   }
   function syncContenuPartout(){ cartes().forEach(syncContenu); }
 
@@ -3356,6 +3420,117 @@
    * serait arrivée avec quelque chose. Repeindre normalise aussi les rangées
    * à compter, dont les choix vivent dans `data-picks`.
    */
+  /* ---------- l'étape « choisir » d'un coffret (24/09/2026) ----------
+     Direction B, retenue par Samer après comparaison à 390 px : la carte ne
+     porte plus les choix ; « Choose & add » ouvre cette étape, et c'est elle
+     qui ajoute la boîte. Trois défauts qu'elle règle, relevés sur son téléphone :
+     le bouton d'ajout était AU-DESSUS des choix ; la boîte était décrite deux
+     fois (la liste, puis les pastilles) ; et « Choose 3 » avait une règle
+     invisible — un appui ajoutait, et le plus ancien choix s'effaçait sans
+     prévenir. Ici, une rangée à compter a ses −/+ et son compteur « 2 of 3 »,
+     et le bouton ne s'active que quand tout est choisi.
+
+     L'étape n'a PAS d'état à elle qui survivrait : elle lit les rangées de la
+     carte en s'ouvrant, travaille sur une copie, et ne les réécrit qu'à la
+     validation. Les rangées restent donc la seule vérité — et leur ORDRE
+     d'emplacements, celui dont l'app se sert pour décompter le stock, ne
+     bouge pas : on réécrit `data-picks`, puis `peindreRangee` et
+     `syncContenu`, exactement comme un appui sur une pastille. */
+  var BOX = null;   // { id, carte, ajout, etat: [{ rangee, k, compte: {cle: n} }] }
+  function totalBox(e){ return Object.keys(e.compte).reduce(function(a, c){ return a + e.compte[c]; }, 0); }
+  function resteBox(){ return BOX.etat.reduce(function(a, e){ return a + (e.k - totalBox(e)); }, 0); }
+  function peindreBox(){
+    var host = $('boxRows'); host.innerHTML = '';
+    BOX.etat.forEach(function(e){
+      var t = totalBox(e), lab = e.rangee.parentNode.querySelector('.fld-label');
+      var fld = document.createElement('div'); fld.className = 'fld box-fld';
+      fld.innerHTML = '<span class="fld-label">' + html(lab ? lab.textContent : '')
+        + (e.k > 1 ? ' <em class="box-n' + (t === e.k ? ' ok' : '') + '">' + html(TF('box_count', t, e.k)) + '</em>' : '')
+        + '</span>';
+      var liste = document.createElement('div'); liste.className = e.k > 1 ? 'box-lignes' : 'chips';
+      [].forEach.call(e.rangee.querySelectorAll('.chip'), function(chip){
+        var cle = chip.getAttribute('data-val'), n = e.compte[cle] || 0, off = chip.disabled;
+        var nom = chip.querySelector('span') ? chip.querySelector('span').textContent : chip.textContent;
+        var unite = T(cle + '_qty'); if(unite === cle + '_qty') unite = '';
+        if(e.k > 1){
+          var l = document.createElement('div'); l.className = 'box-ligne' + (n ? ' on' : '');
+          l.innerHTML = '<span class="box-nom">' + html(nom) + '<small>' + html(unite) + '</small></span>'
+            + '<span class="box-pas"><button type="button" class="qty-btn" data-d="-1"' + (n ? '' : ' disabled') + ' aria-label="−">−</button>'
+            + '<b>' + n + '</b><button type="button" class="qty-btn" data-d="1"' + (off || t >= e.k ? ' disabled' : '') + ' aria-label="+">+</button></span>';
+          l.querySelectorAll('button').forEach(function(bt){
+            bt.addEventListener('click', function(){
+              var d = Number(bt.getAttribute('data-d'));
+              if(d < 0 && e.compte[cle]) e.compte[cle]--;
+              if(d > 0 && !off && totalBox(e) < e.k) e.compte[cle] = (e.compte[cle] || 0) + 1;
+              peindreBox();
+            });
+          });
+          liste.appendChild(l);
+        }else{
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+          b.disabled = off; b.setAttribute('aria-pressed', n ? 'true' : 'false');
+          b.innerHTML = '<span>' + html(nom) + '</span>' + (unite ? '<small>' + html(unite) + '</small>' : '');
+          b.addEventListener('click', function(){ if(off) return; e.compte = {}; e.compte[cle] = 1; peindreBox(); });
+          liste.appendChild(b);
+        }
+      });
+      fld.appendChild(liste);
+      host.appendChild(fld);
+    });
+    var go = $('boxGo'), reste = resteBox();
+    go.disabled = reste > 0;
+    go.querySelector('span').textContent = reste > 0 ? TF('box_left', reste)
+      : (BOX.ajout ? TF('box_add', PRICES[BOX.id] + ' ' + T('qr')) : T('box_done'));
+  }
+  function ouvrirBox(id, ajout){
+    var carte = carteDe(id), rangees = rangeesDeChoix(carte);
+    // Une offre sans rien à choisir s'ajoute tout de suite : l'étape n'aurait rien à montrer.
+    if(!rangees.length){ if(ajout) bump(id, 1); return; }
+    BOX = { id: id, carte: carte, ajout: ajout, etat: rangees.map(function(r){
+      var c = {}; clesDeRangee(r).forEach(function(k){ c[k] = (c[k] || 0) + 1; });
+      return { rangee: r, k: nbSlots(r), compte: c };
+    }) };
+    var serves = carte.querySelector('.spread-price em');
+    $('boxTitle').textContent = carte.querySelector('h2').textContent;
+    $('boxSub').textContent = PRICES[id] + ' ' + T('qr') + (serves && serves.textContent ? ' · ' + serves.textContent : '');
+    peindreBox();
+    $('boxSheet').classList.add('open'); $('boxVeil').classList.add('open');
+    document.body.classList.add('sheet-open');
+  }
+  function fermerBox(){
+    $('boxSheet').classList.remove('open'); $('boxVeil').classList.remove('open');
+    if(!$('sheet').classList.contains('open')) document.body.classList.remove('sheet-open');
+    BOX = null;
+  }
+  function validerBox(){
+    if(!BOX || resteBox() > 0) return;
+    BOX.etat.forEach(function(e){
+      // Les emplacements dans l'ordre des pastilles : le compte seul compte
+      // pour la boîte, et l'app répartit un emplacement par clé.
+      var picks = [];
+      [].forEach.call(e.rangee.querySelectorAll('.chip'), function(chip){
+        var cle = chip.getAttribute('data-val');
+        for(var i = 0; i < (e.compte[cle] || 0); i++) picks.push(cle);
+      });
+      e.rangee.setAttribute('data-picks', picks.join(','));
+      peindreRangee(e.rangee);
+    });
+    // Le drapeau qu'un appui sur une pastille posait : ce choix est celui de la
+    // cliente, `ecrireComposition` doit le garder quand le catalogue arrive.
+    var host = BOX.carte.querySelector('.offre-choix'); if(host) host.dataset.choisi = '1';
+    syncContenu(BOX.carte);
+    var id = BOX.id, ajout = BOX.ajout;
+    fermerBox();
+    if(ajout) bump(id, 1); else refresh();
+  }
+  $('boxGo').addEventListener('click', validerBox);
+  $('boxClose').addEventListener('click', fermerBox);
+  $('boxVeil').addEventListener('click', fermerBox);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && BOX) fermerBox(); });
+  document.querySelectorAll('[data-change]').forEach(function(b){
+    b.addEventListener('click', function(){ ouvrirBox(b.getAttribute('data-change'), false); });
+  });
+
   function reparerRangees(){
     cartes().forEach(function(carte){ rangeesDeChoix(carte).forEach(peindreRangee); });
   }
@@ -4847,6 +5022,8 @@
   document.querySelectorAll('[data-add]').forEach(function(b){
     b.addEventListener('click', function(){
       if(b.disabled) return;
+      // Un coffret ne s'ajoute plus d'un coup : on choisit d'abord (24/09/2026).
+      if(b.closest('.hero-box')){ ouvrirBox(b.getAttribute('data-add'), true); return; }
       bump(b.getAttribute('data-add'), 1);
       var lbl = b.querySelector('span'), avant = lbl.textContent;
       b.classList.add('on');
@@ -4868,6 +5045,10 @@
   // premier appui ou au catalogue : la réécrire ici mêlait sur une même carte
   // les noms du dictionnaire et les mots cuits (vu le 06/09/2026 au soir).
   reparerRangees();
+  // Le résumé des cartes (24/09/2026) dit la liste TELLE QU'ELLE EST, dès le
+  // chargement : sans lui, tant que le catalogue n'arrive pas — réseau lent ou
+  // coupé —, « You choose what goes in » restait suivi d'une ligne vide.
+  cartes().forEach(function(c){ var r = c.querySelector('[data-resume]'); if(r) r.textContent = QTY(c.getAttribute('data-offre')); });
 
   /* ---------- les quatre boîtes : le défilement ----------
      Le coffret et les trois Majlis se suivent sur une piste qui défile à
