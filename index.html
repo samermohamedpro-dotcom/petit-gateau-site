@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20260924-1305">
+<meta name="pg-build" content="20261002-2142">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -641,6 +641,51 @@
     content:"";display:inline-block;width:6px;height:6px;border-radius:50%;
     background:var(--gold);margin-inline-end:8px;vertical-align:middle;
   }
+
+  /* ================= LA FEUILLE EN DEUX TEMPS (02/10/2026) =================
+     Direction B, choisie par Samer sur captures comparées à 390 px : la
+     commande, le jour, l'heure, le nom et le numéro d'abord (`.in-1`),
+     l'adresse et le total ensuite (`.in-2`). C'est `data-step`, posé sur la
+     feuille par checkout.js, qui décide — et tant qu'il n'est pas posé, rien
+     n'est masqué. `!important` exprès : plusieurs de ces blocs reçoivent un
+     `display` en ligne du script (le menu, le reste de la feuille). */
+  .sheet[data-step="1"] .in-2,
+  .sheet[data-step="2"] .in-1{display:none !important;}
+
+  /* Le repère : deux pastilles, celle du temps en cours est pleine. Elles ne
+     se touchent pas du doigt — on avance par le bouton du pied, on revient
+     par « Change ». L'inactive reste à 6:1 sur son fond : pas d'opacité. */
+  .steps{display:flex;gap:8px;margin:14px 0 18px;padding:0;}
+  .steps span{
+    flex:1;text-align:center;padding:8px 6px;border-radius:999px;
+    font-family:var(--police);font-weight:700;font-size:0.8rem;line-height:1.3;
+    background:var(--vert-clair);color:var(--deep-green);
+  }
+  .steps span[aria-current="step"]{background:var(--vert);color:var(--cream);}
+
+  /* Le rappel du second temps : ce qui a été choisi au premier. */
+  .recap{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:6px 15px;border-radius:14px;background:#fff;
+    font-family:var(--police);font-size:0.9rem;line-height:1.4;color:var(--deep-maroon);
+  }
+  .recap-back{
+    flex:0 0 auto;min-height:44px;border:0;background:none;cursor:pointer;padding:0;
+    font-family:var(--police);font-size:0.9rem;font-weight:700;color:var(--deep-green);
+    text-decoration:underline;text-underline-offset:3px;
+  }
+
+  /* Les plis : le lien Google Maps sous sa propre question, et les trois
+     questions facultatives sous une seule. `.more-fields` les ouvre. */
+  .loc-more{
+    display:block;min-height:44px;margin-top:8px;padding:0;border:0;background:none;cursor:pointer;
+    font-family:var(--police);font-size:0.9rem;font-weight:700;color:var(--deep-maroon);
+    text-align:start;text-decoration:underline;text-underline-offset:3px;
+  }
+  .loc-more + .loc-else{margin-top:0;padding-top:0;border-top:0;}
+  #extrasBtn{margin-top:22px;}
+  .more-toggle .opt{font-weight:400;font-size:0.78rem;color:var(--maroon);margin-inline-start:6px;}
+  #extras > .gift-toggle{margin-top:14px;}
 
 
   /* ================= FINS DE LIGNE ORPHELINES (ordinateur seulement) =========
@@ -2730,22 +2775,35 @@
 
   <div class="sheet-body">
 
-    <div class="fld" style="margin-top:0;">
+    <!-- DEUX TEMPS depuis le 02/10/2026 (direction B, choisie par Samer sur
+         captures comparées à 390 px). La feuille faisait six écrans d'un seul
+         tenant ; elle demande maintenant la commande, le jour, l'heure, le nom
+         et le numéro (`.in-1`), PUIS l'adresse et le total (`.in-2`). Aucune
+         question n'a disparu. C'est `data-step`, posé sur la feuille par
+         checkout.js, qui montre un temps et masque l'autre (checkout.css) :
+         sans JavaScript, rien n'est masqué et tout reste lisible. -->
+    <p class="steps" id="steps"><span data-step="1">1 · Your order</span><span data-step="2">2 · Delivery</span></p>
+    <div class="recap in-2" id="recap">
+      <span id="recapTxt" dir="ltr"></span>
+      <button type="button" class="recap-back" id="recapBack">Change</button>
+    </div>
+
+    <div class="fld in-1" style="margin-top:0;">
       <span class="fld-label">Your basket</span>
       <div id="cartLines"></div>
       <p class="pick-empty" id="cartEmpty">Your basket is empty.</p>
     </div>
 
-    <div class="fld" id="pickerWrap">
+    <div class="fld in-1" id="pickerWrap">
       <span class="fld-label">What would you like?</span>
       <p class="fld-help" style="margin:-4px 0 12px;">Tap + to add. Prices and delivery are worked out for you — nothing to ask.</p>
       <div id="picker"></div>
     </div>
-    <button type="button" class="more-toggle" id="pickerBtn">+ Add another item</button>
+    <button type="button" class="more-toggle in-1" id="pickerBtn">+ Add another item</button>
 
     <div id="sheetRest">
 
-    <div class="fld">
+    <div class="fld in-1">
       <span class="fld-label">Delivery day <span class="req">*</span></span>
       <div class="dates" id="dateRail"></div>
       <div class="sameday-warn" id="sameDayWarn">Rusk “Shabora” and Brown Butter Banana Bread are baked to order and ready from tomorrow. Pick a later day for them — or leave them out and we deliver the rest today.</div>
@@ -2753,7 +2811,7 @@
       <div class="err-msg">Please pick a day.</div>
     </div>
 
-    <div class="fld">
+    <div class="fld in-1">
       <span class="fld-label">Time <span class="req">*</span></span>
       <div class="chips" id="slotChips">
         <button type="button" class="chip" data-val="12">12 PM</button>
@@ -2768,7 +2826,27 @@
       <div class="err-msg">Please pick a time.</div>
     </div>
 
-    <div class="fld">
+    <div class="fld in-1">
+      <span class="fld-label">Name <span class="req">*</span></span>
+      <input type="text" id="fName" autocomplete="family-name">
+      <div class="err-msg">Please tell us your name.</div>
+    </div>
+
+    <div class="fld in-1">
+      <span class="fld-label">Your WhatsApp number <span class="req">*</span></span>
+      <input type="tel" id="fPhone" inputmode="tel" autocomplete="tel" placeholder="+974 …" dir="ltr">
+      <div class="err-msg">Please add a Qatar mobile number.</div>
+    </div>
+
+    <!-- « Keep me posted » était tout en bas de la feuille, sous la note : 3
+         clientes sur 48 l'avaient cochée le 01/10/2026. Il suit le numéro
+         qu'il concerne. -->
+    <button type="button" class="gift-toggle in-1" id="optinBtn" aria-pressed="false" style="margin-top:16px;">
+      <span class="gift-box"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span>
+      <span>Keep me posted about new batches</span>
+    </button>
+
+    <div class="fld in-2">
       <span class="fld-label">Where do we deliver? <span class="req">*</span></span>
       <div class="addr-grid">
         <div class="af">
@@ -2795,9 +2873,11 @@
       </button>
       <span class="fld-help">Use this only if you are standing at the delivery address.</span>
 
-      <div class="loc-else">
-        <span class="af-l">Delivering somewhere else?</span>
-        <input type="url" id="locLink" inputmode="url" placeholder="Paste a Google Maps link">
+      <!-- Le lien Google Maps n'est jamais obligatoire : il se déplie sous sa
+           propre question au lieu d'étaler son mode d'emploi pour toutes. -->
+      <button type="button" class="loc-more" id="locMore" aria-expanded="false" aria-controls="locElse">Delivering somewhere else?</button>
+      <div class="loc-else more-fields" id="locElse">
+        <input type="url" id="locLink" inputmode="url" placeholder="Paste a Google Maps link" aria-label="Paste a Google Maps link">
         <span class="fld-help">Open Google Maps, hold your finger on the spot, then Share → Copy link. Addresses in Doha are rarely precise — a pin saves the driver a call.</span>
         <div class="err-msg" id="locErr">That does not look like a map link.</div>
       </div>
@@ -2808,28 +2888,19 @@
          (strings.py, « La livraison : une estimation privée »). Sans elle,
          « Subtotal » et « Total » porteraient le même nombre : on garde le
          total, et la note dit ce qui s'ajoutera à la confirmation. -->
-    <div class="totals">
+    <div class="totals in-2">
       <div class="tl grand"><span>Total</span><span id="tGrand">0 QR</span></div>
       <p class="tl-note">Plus delivery, 15–90 QR depending on your area. One total on WhatsApp, and you pay once.</p>
       <p class="pay-info">Pay by Fawran or bank transfer once we confirm your order on WhatsApp. Fawran name: petitgateau</p>
     </div>
 
-    <div class="driver-note">
+    <div class="driver-note in-2">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="6" width="14" height="10" rx="1.5"/><path d="M15 9h4l3 3.5V16h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
       <div><b>About delivery</b>Delivered to your door anywhere in Qatar by our driver. Delivery is extra: 15–90 QR, depending on the distance from our kitchen in Al Wakrah. We confirm it with your total on WhatsApp, and you pay once.</div>
     </div>
 
-    <div class="fld">
-      <span class="fld-label">Name <span class="req">*</span></span>
-      <input type="text" id="fName" autocomplete="family-name">
-      <div class="err-msg">Please tell us your name.</div>
-    </div>
-
-    <div class="fld">
-      <span class="fld-label">Your WhatsApp number <span class="req">*</span></span>
-      <input type="tel" id="fPhone" inputmode="tel" autocomplete="tel" placeholder="+974 …" dir="ltr">
-      <div class="err-msg">Please add a Qatar mobile number.</div>
-    </div>
+    <button type="button" class="more-toggle in-2" id="extrasBtn" aria-expanded="false" aria-controls="extras">A gift, an occasion or a note <span class="opt">optional</span></button>
+    <div class="more-fields in-2" id="extras">
 
     <button type="button" class="gift-toggle" id="giftBtn" aria-pressed="false">
       <span class="gift-box"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span>
@@ -2860,12 +2931,9 @@
       <textarea id="fNote"></textarea>
     </div>
 
-    </div><!-- /sheetRest -->
+    </div><!-- /extras -->
 
-    <button type="button" class="gift-toggle" id="optinBtn" aria-pressed="false" style="margin-top:24px;">
-      <span class="gift-box"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span>
-      <span>Keep me posted about new batches</span>
-    </button>
+    </div><!-- /sheetRest -->
 
   </div>
 
@@ -2882,11 +2950,13 @@
   </div>
 
   <div class="sheet-foot">
-    <button class="sheet-send" id="sheetSend">
+    <button type="button" class="sheet-send in-1" id="sheetNext"><span>Continue to delivery</span></button>
+    <div class="sheet-reassure in-1">One more step: where we deliver.</div>
+    <button class="sheet-send in-2" id="sheetSend">
       <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
       <span>Send order on WhatsApp</span>
     </button>
-    <div class="sheet-reassure">Nothing is charged here. We confirm everything with you on WhatsApp.</div>
+    <div class="sheet-reassure in-2">Nothing is charged here. We confirm everything with you on WhatsApp.</div>
   </div>
 </div>
 
@@ -3019,6 +3089,12 @@
       co_send:"Send order on WhatsApp",
       co_reassure:"Nothing is charged here. We confirm everything with you on WhatsApp.",
       opt:"optional",
+      co_step1:"1 · Your order",
+      co_step2:"2 · Delivery",
+      co_next:"Continue to delivery",
+      co_next_note:"One more step: where we deliver.",
+      co_change:"Change",
+      co_extras:"A gift, an occasion or a note",
       pick_title:"What would you like?",
       pick_hint:"Tap + to add. Prices and delivery are worked out for you — nothing to ask.",
       pick_more:"+ Add another item",
@@ -4017,6 +4093,7 @@
     $('pickerBtn').style.display = empty ? 'none' : 'block';
     if(empty) showPicker(true);
     $('sheetSend').disabled = empty;
+    $('sheetNext').disabled = empty;
 
     if($('dateRail').children.length) syncDates();
 
@@ -4138,11 +4215,70 @@
     });
   })();
 
+  /* ---------- la feuille en deux temps (02/10/2026) ----------
+     Direction B, choisie par Samer sur captures comparées à 390 px. La
+     feuille faisait 3 066 px pour 517 visibles, et de 95 feuilles ouvertes en
+     26 jours il n'est parti que 23 commandes.
+
+     Le premier temps (`.in-1`) demande la commande, le jour, l'heure, le nom
+     et le numéro ; le second (`.in-2`), l'adresse, et montre le total. Les
+     sept questions obligatoires sont les mêmes qu'avant, et le message aussi.
+
+     `data-step` sur la feuille est le SEUL état : le CSS masque l'autre temps
+     d'après lui. Sans JavaScript l'attribut n'existe pas, rien n'est masqué. */
+  function jourLisible(iso){
+    return new Date(iso + 'T00:00:00')
+      .toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+  }
+  function etape(n){
+    var change = sheet.getAttribute('data-step') !== String(n);
+    sheet.setAttribute('data-step', String(n));
+    [].forEach.call($('steps').children, function(p){
+      if(p.getAttribute('data-step') === String(n)) p.setAttribute('aria-current', 'step');
+      else p.removeAttribute('aria-current');
+    });
+    // Le rappel du second temps : ce qu'elle a choisi, pour ne pas avoir à
+    // revenir en arrière vérifier. Heures, dates et prix restent en chiffres
+    // latins dans les deux langues, comme partout dans la feuille.
+    if(n === 2){
+      var dit = [$('tGrand').textContent.trim()];
+      if(S.date) dit.push(jourLisible(S.date));
+      if(S.slot) dit.push(T('co_slot_' + S.slot));
+      $('recapTxt').textContent = dit.join(' \u00b7 ');
+    }
+    // On ne remonte en haut que si le temps CHANGE : rester sur place quand
+    // un envoi est refusé, pour que la faute signalée soit celle qu'on voit.
+    var corps = sheet.querySelector('.sheet-body');
+    if(change && corps) corps.scrollTop = 0;
+  }
+  function dansPremierTemps(el){ return Boolean(el.closest('.in-1')); }
+
+  // Un pli : le lien Google Maps, et « cadeau, occasion, note ». Le bouton
+  // qui le commande le désigne par `aria-controls`.
+  function deplier(pli, on){
+    pli.classList.toggle('on', on);
+    var b = sheet.querySelector('[aria-controls="' + pli.id + '"]');
+    if(b) b.setAttribute('aria-expanded', on ? 'true' : 'false');
+  }
+  ['locMore', 'extrasBtn'].forEach(function(id){
+    $(id).addEventListener('click', function(){
+      var pli = $(this.getAttribute('aria-controls'));
+      deplier(pli, !pli.classList.contains('on'));
+    });
+  });
+  $('recapBack').addEventListener('click', function(){ etape(1); });
+
   /* ---------- ouverture / fermeture ---------- */
   function open(){
     sheet.classList.remove('sent');   // une nouvelle commande repart de la feuille
     buildDates(); paint(); recall(); paint();
     repeindre();   // l'adresse retenue peut avoir réparé un rouge d'avant
+    // Le menu ne s'ouvre seul que sur un panier VIDE, là où la feuille sert à
+    // composer. Depuis le premier jour rien ne le repliait : un panier déjà
+    // rempli retrouvait mille pixels de produits entre lui et la première
+    // question, sous un bouton qui disait pourtant « + Add another item ».
+    showPicker(count() === 0);
+    etape(1);
     sheet.classList.add('open'); veil.classList.add('open');
     document.body.classList.add('sheet-open');
     // La feuille ouverte : l'étape entre « panier » et « commande » que
@@ -4190,10 +4326,7 @@
   function montrerEnvoye(){
     var quand = $('sentWhen');
     if(quand && S.date && S.slot){
-      var d = new Date(S.date + 'T00:00:00');
-      quand.textContent = TF('sent_when',
-        d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' }),
-        T('co_slot_' + S.slot));
+      quand.textContent = TF('sent_when', jourLisible(S.date), T('co_slot_' + S.slot));
     }
     Object.keys(ORDER).forEach(function(id){ ORDER[id] = 0; });
     document.querySelectorAll('.qty-row .qty-val').forEach(function(v){ v.textContent = '0'; });
@@ -4213,11 +4346,11 @@
     var ko = [];
     if(!S.date)                            ko.push($('dateRail'));
     if(!S.slot)                            ko.push($('slotChips'));
+    if(!$('fName').value.trim())           ko.push($('fName'));
+    if(chiffres($('fPhone')) < 8)          ko.push($('fPhone'));
     if(!$('fZone').value.trim())           ko.push($('fZone'));
     if(!$('fCity').value.trim())           ko.push($('fCity'));
     if(!$('fHouse').value.trim())          ko.push($('fHouse'));
-    if(!$('fName').value.trim())           ko.push($('fName'));
-    if(chiffres($('fPhone')) < 8)          ko.push($('fPhone'));
     if(S.gift && chiffres($('fPhone2')) < 8) ko.push($('fPhone2'));
     return ko;
   }
@@ -4278,19 +4411,48 @@
     $(id).addEventListener('input', repeindre);
   });
 
+  // Toutes les fautes d'une liste sont signalées d'un coup, pas une par une,
+  // et la première vient à l'écran. Une faute rangée dans un pli fermé
+  // l'ouvre : sinon elle serait rouge là où personne ne regarde.
+  function signaler(ko){
+    var errs = [];
+    ko.forEach(function(el){
+      var pli = el.closest('.more-fields');
+      if(pli && !pli.classList.contains('on')) deplier(pli, true);
+      var f = bad(el); if(errs.indexOf(f) < 0) errs.push(f);
+    });
+    direCeQuiManque(ko);
+    if(errs[0]) errs[0].scrollIntoView({behavior:'smooth', block:'center'});
+    return errs.length > 0;
+  }
+
+  // « Continue » : le premier temps seul est jugé. L'adresse, qu'elle n'a
+  // pas encore vue, n'est accusée de rien. Ce n'est PAS un envoi : `envois`
+  // ne compte que l'appui sur « Send », pour que son écart avec `commandes`
+  // continue de dire combien butent au moment d'envoyer.
+  $('sheetNext').addEventListener('click', function(){
+    netToutRouge();
+    // Elle composait dans la feuille : le menu se range avant de répondre,
+    // sinon ce qui manque est signalé sous mille pixels de produits.
+    if(count() > 0) showPicker(false);
+    if(signaler(manque().filter(dansPremierTemps))) return;
+    etape(2);
+  });
+
   $('sheetSend').addEventListener('click', function(){
     // L'envoi tenté, refusé ou non : l'écart avec « commandes » dit combien
     // de clientes butent sur le formulaire. Une fois par visite.
     mesurer(['envois']);
     netToutRouge();
 
-    // toutes les erreurs sont signalées d'un coup, pas une par une
-    var errs = [], ko = manque();
-    ko.forEach(function(el){ var f = bad(el); if(errs.indexOf(f) < 0) errs.push(f); });
-    direCeQuiManque(ko);
-
-    var first = errs[0] || null;
-    if(first){ first.scrollIntoView({behavior:'smooth', block:'center'}); return; }
+    // Rien ne part s'il manque quoi que ce soit, dans l'un ou l'autre temps :
+    // la faute la plus haute décide de celui qu'on montre.
+    var ko = manque();
+    if(ko.length){
+      etape(ko.some(dansPremierTemps) ? 1 : 2);
+      signaler(ko);
+      return;
+    }
 
     remember();
 
