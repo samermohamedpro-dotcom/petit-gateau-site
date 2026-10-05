@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261002-2142">
+<meta name="pg-build" content="20261005-0944">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -4437,6 +4437,10 @@
     if(count() > 0) showPicker(false);
     if(signaler(manque().filter(dansPremierTemps))) return;
     etape(2);
+    // Le second temps ATTEINT : l'étape entre la feuille ouverte et l'appui
+    // sur « Send ». Sans elle, on ne saurait pas si une cliente renonce avant
+    // l'adresse ou devant elle. Une fois par visite, comme les autres.
+    mesurer(['adresses']);
   });
 
   $('sheetSend').addEventListener('click', function(){
@@ -4746,6 +4750,34 @@
       sessionStorage.setItem(cle, '1');
     }catch(e){ /* navigation privée : on compte une fois par page, tant pis */ }
     incrementer(champs);
+    // La même étape, comptée une seconde fois sous son origine — et dans une
+    // écriture À PART, exprès. Les règles Firestore refusent une écriture
+    // ENTIÈRE dès qu'un seul champ leur est inconnu : collé au compteur du
+    // dessus, un champ neuf pas encore publié aurait emporté les visites avec
+    // lui, sans un bruit. Séparé, le pire cas est de ne pas avoir l'origine.
+    var o = origineCompteur();
+    if(o && PAR_ORIGINE.indexOf(champs[0]) >= 0) incrementer([champs[0] + o]);
+  }
+
+  /* ---------- d'où vient la visite, étape par étape (05/10/2026) ----------
+     Le 01/10/2026, quatre campagnes avaient amené 1 090 visites payées et
+     aucune commande par leur lien — et rien ne disait OÙ ces visites
+     s'arrêtaient : les compteurs ne portaient que des totaux par jour.
+
+     Deux origines, et deux seulement : le lien d'une PUBLICITÉ
+     (`utm_medium=paid`) et le lien de la BIO (`utm_medium=bio`). Ce sont les
+     mêmes mots que l'app lit sur une commande (`natureOrigine`,
+     publicites.js). Tout le reste — sans lien, un statut WhatsApp, un support
+     mal écrit — ne reçoit AUCUNE origine : on ne range pas une visite dans
+     une case qu'on aurait devinée.
+
+     Les noms sont fabriqués, « paniers » + « Pub » : `tests.mjs` les refabrique
+     depuis ces deux listes pour vérifier que les règles Firestore les
+     autorisent tous. Toujours des totaux, toujours aucun identifiant. */
+  var PAR_ORIGINE = ['vues', 'paniers', 'feuilles', 'adresses', 'envois', 'commandes'];
+  var ORIGINES = { paid: 'Pub', bio: 'Bio' };
+  function origineCompteur(){
+    return ORIGINES[String(UTM.utmMedium || '').toLowerCase()] || '';
   }
 
   // La visite. La page arabe compte deux fois : dans le total et dans son
