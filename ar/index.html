@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261005-0944">
+<meta name="pg-build" content="20261005-2006">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3208,7 +3208,8 @@
       co_m_optin:"يرغب بمتابعة الجديد",
       co_m_loc:"الموقع",
       co_city:"المدينة",
-      co_zoneno:"المنطقة"
+      co_zoneno:"المنطقة",
+      co_m_inv:"الدعوة"
     },
     ar: {
       item1_qty:"12 حبة",
@@ -4512,6 +4513,12 @@
     if(S.occ) m.push(T('co_m_occ') + ': ' + T('co_occ' + ({birthday:'1',majlis:'2',gift:'3',us:'4'}[S.occ])));
     if($('fNote').value.trim()) m.push(T('co_m_note') + ': ' + $('fNote').value.trim());
     if(S.optin) m.push('\u2713 ' + T('co_m_optin'));
+    // L'invitation, sur sa ligne : c'est ce que l'app relit si le dépôt a
+    // échoué, et ce qui dit à la proche que son lien a bien suivi. L'app
+    // relit le libellé anglais comme l'arabe (« الدعوة », validé le 05/10/2026).
+    // Isolée comme les numéros : dans une phrase arabe, un code qui commence
+    // par un chiffre se réordonnerait autour de son tiret.
+    if(INVITATION) m.push(T('co_m_inv') + ': \u2066' + invitationLisible() + '\u2069');
 
     // La commande est déposée dans la boîte de l'app AVANT d'ouvrir WhatsApp.
     // Elle n'attend rien : si le dépôt échoue, la cliente ne s'en aperçoit
@@ -4591,6 +4598,44 @@
     }
   })();
 
+  /* ---------- l'invitation : un lien privé, et rien à l'écran ----------
+     Tranché par Samer et sa femme le 05/10/2026. Un proche reçoit, de la main
+     à la main, un lien `…/?i=CODE`. Le site ne sait PAS ce que vaut ce code,
+     et ne peut pas le savoir : il ne lit que le catalogue public. Il le
+     TRANSMET — dans le dépôt et dans le message — et c'est l'app qui décide,
+     à l'acceptation. La proche lit son geste dans la confirmation WhatsApp.
+
+     Ce que cette page ne fait donc JAMAIS, et qui tient à la marque :
+       — aucun champ « code » : sa seule présence annoncerait à chaque
+         visiteuse que des prix plus bas existent pour d'autres ;
+       — aucun prix baissé, aucun mot affiché : la page d'une invitée est, au
+         pixel près, celle de tout le monde. Promettre un montant ici, ce
+         serait promettre ce qu'on ne peut pas vérifier (un code déjà servi) ;
+       — rien dans une adresse qu'on partage : le lien de langue pointe vers
+         « /ar/ » sans paramètre, et l'invitation suit par la mémoire de
+         l'onglet, comme les UTM.
+
+     Ramenée à des lettres et des chiffres, 24 au plus — la même borne que les
+     règles Firestore, qui refuseraient le dépôt ENTIER au-delà. Le dernier
+     lien vu l'emporte ; une adresse sans `i` ne l'efface pas. */
+  var INV_CLE = 'pg-invitation';
+  function invitationPropre(v){
+    return String(v == null ? '' : v).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 24);
+  }
+  var INVITATION = (function(){
+    var lue = invitationPropre(parametre('i'));
+    try{
+      if(lue){ sessionStorage.setItem(INV_CLE, lue); return lue; }
+      return invitationPropre(sessionStorage.getItem(INV_CLE));
+    }catch(e){
+      return lue;
+    }
+  })();
+  // « K7M2-9QXP » : en deux groupes, comme l'app l'affiche.
+  function invitationLisible(){
+    return INVITATION.length > 4 ? INVITATION.slice(0, 4) + '-' + INVITATION.slice(4) : INVITATION;
+  }
+
   /* ---------- dépôt de la commande dans la boîte de l'app ----------
      Le site écrit dans une collection qu'il ne peut pas relire : il dépose,
      il ne consulte rien. Ce qui est déposé est ce que la cliente vient
@@ -4660,6 +4705,14 @@
           optin: { booleanValue: Boolean(S.optin) },
         } } },
       } };
+      /* L'invitation, SEULEMENT s'il y en a une. Une commande sans invitation
+         part donc exactement comme avant ce champ, que les règles Firestore
+         qui l'autorisent soient publiées ou non : un champ neuf collé à
+         toutes les commandes les aurait toutes fait refuser d'un coup le jour
+         d'un oubli. Avec invitation et règles pas encore publiées, le dépôt
+         est refusé, compté (`depotsRates`), et la commande part par WhatsApp
+         avec sa ligne — l'app sait la relire. */
+      if(INVITATION) corps.fields.invitation = txt(INVITATION);
 
       fetch(URL_ENTRANTES, {
         method: 'POST',
