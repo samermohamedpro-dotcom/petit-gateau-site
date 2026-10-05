@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261005-2006">
+<meta name="pg-build" content="20261005-2021">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -652,16 +652,29 @@
   .sheet[data-step="1"] .in-2,
   .sheet[data-step="2"] .in-1{display:none !important;}
 
-  /* Le repère : deux pastilles, celle du temps en cours est pleine. Elles ne
-     se touchent pas du doigt — on avance par le bouton du pied, on revient
-     par « Change ». L'inactive reste à 6:1 sur son fond : pas d'opacité. */
+  /* Le repère : deux pastilles, celle du temps en cours est pleine.
+     L'inactive reste à 6:1 sur son fond : pas d'opacité.
+
+     RÉÉCRIT le 05/10/2026. Ce commentaire disait « elles ne se touchent pas
+     du doigt — on revient par Change ». Samer, qui avait validé la feuille le
+     02/10, a cherché le retour sur la pastille « 1 · Your order » et ne l'a
+     pas trouvé. La première est donc un BOUTON, qui ramène au premier temps
+     comme « Change » (qui reste). La seconde reste un repère : on y avance
+     par « Continue », qui vérifie le premier temps.
+
+     Le bouton garde la taille de la pastille — 44 px de haut auraient poussé
+     toute la feuille de quinze pixels — mais sa zone de toucher fait 44 px,
+     par un `::before` qui déborde en haut et en bas (mesuré dans Chromium,
+     verif-mise-en-page.mjs, et vu échouer sans lui). */
   .steps{display:flex;gap:8px;margin:14px 0 18px;padding:0;}
-  .steps span{
+  .steps span, .steps button{
     flex:1;text-align:center;padding:8px 6px;border-radius:999px;
     font-family:var(--police);font-weight:700;font-size:0.8rem;line-height:1.3;
     background:var(--vert-clair);color:var(--deep-green);
   }
-  .steps span[aria-current="step"]{background:var(--vert);color:var(--cream);}
+  .steps button{position:relative;border:0;margin:0;cursor:pointer;-webkit-appearance:none;appearance:none;}
+  .steps button::before{content:"";position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%);}
+  .steps [aria-current="step"]{background:var(--vert);color:var(--cream);}
 
   /* Le rappel du second temps : ce qui a été choisi au premier. */
   .recap{
@@ -2782,7 +2795,12 @@
          question n'a disparu. C'est `data-step`, posé sur la feuille par
          checkout.js, qui montre un temps et masque l'autre (checkout.css) :
          sans JavaScript, rien n'est masqué et tout reste lisible. -->
-    <p class="steps" id="steps"><span data-step="1">1 · Your order</span><span data-step="2">2 · Delivery</span></p>
+    <!-- La pastille du PREMIER temps est un bouton depuis le 05/10/2026 : au
+         second temps, c'est là que Samer a posé le doigt pour revenir, et rien
+         ne répondait (« Change », juste dessous, faisait pourtant ce retour).
+         Celle du second temps reste un simple repère : on y avance par
+         « Continue », qui vérifie d'abord le premier. -->
+    <p class="steps" id="steps"><button type="button" data-step="1" id="stepBack">1 · Your order</button><span data-step="2">2 · Delivery</span></p>
     <div class="recap in-2" id="recap">
       <span id="recapTxt" dir="ltr"></span>
       <button type="button" class="recap-back" id="recapBack">Change</button>
@@ -4268,6 +4286,10 @@
     });
   });
   $('recapBack').addEventListener('click', function(){ etape(1); });
+  // La pastille « 1 · Your order » fait le même retour (05/10/2026) : au
+  // second temps, c'est elle que le doigt cherche. Au premier, elle ne fait
+  // rien — on y est déjà.
+  $('stepBack').addEventListener('click', function(){ etape(1); });
 
   /* ---------- ouverture / fermeture ---------- */
   function open(){
