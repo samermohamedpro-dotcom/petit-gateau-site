@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261007-1611">
+<meta name="pg-build" content="20261007-1702">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2240,7 +2240,16 @@ body>*:not(#pg-pause){display:none!important}
   justify-content:center;align-items:center;padding:28px 0 40px;overflow:hidden;
   font-family:var(--police-latin);color:#5E1622;text-align:center;direction:ltr;-webkit-font-smoothing:antialiased}
 #pg-pause *{box-sizing:border-box}
-.pp-sign{position:relative;width:min(86vw,540px);transform:rotate(-2.5deg)}
+/* La pancarte se balance autour de son clou (Samer, 07/10/2026 : « légèrement de
+   droite à gauche »). Les deux bouts de la course sont --pp-a et --pp-b, et
+   test-pause.mjs mesure la pancarte À CHACUN des deux : c'est aux bouts qu'elle
+   s'approche des bords. Le clou est à 10 % de la hauteur du fil (cy=9 sur 90). */
+.pp-sign{--pp-a:-3deg;--pp-b:2deg;position:relative;width:min(81vw,540px);
+  transform-origin:50% calc(clamp(54px,14vw,90px)*.1);transform:rotate(var(--pp-a));
+  animation:pp-balance 4.5s ease-in-out infinite alternate}
+@keyframes pp-balance{from{transform:rotate(var(--pp-a))}to{transform:rotate(var(--pp-b))}}
+/* Un besoin, pas un goût : qui a demandé moins de mouvement voit la pancarte immobile. */
+@media (prefers-reduced-motion:reduce){.pp-sign{animation:none}}
 .pp-fil{display:block;width:100%;height:clamp(54px,14vw,90px);overflow:visible}
 .pp-card{background:#FAF6EC;border-radius:clamp(22px,6vw,34px);padding:clamp(34px,10vw,60px) clamp(20px,6vw,40px) clamp(58px,16vw,80px);
   outline:2px solid #CFE0C6;outline-offset:clamp(-16px,-3vw,-10px);box-shadow:0 30px 60px -30px rgba(0,0,0,.55)}
