@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261007-2300">
+<meta name="pg-build" content="20261020-1453">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -482,6 +482,9 @@
     border:1.5px solid rgba(94,22,34,0.25);background:#fff;color:var(--maroon);
     transition:background .15s,border-color .15s,color .15s;
   }
+  /* Une heure que le jour retenu n'offre pas (vendredi avant 15h, soirée d'avant le
+     29/10/2026) : cachée, jamais grisée — une case grise se lit « prise ». */
+  .chip[hidden]{display:none !important;}
   .chip[aria-pressed="true"]{
     background:var(--deep-maroon);border-color:var(--deep-maroon);color:var(--cream);
   }
@@ -2233,6 +2236,8 @@
   "inLanguage": "ar"
 }
 </script>
+<style id="pg-horaires-css">html:not(.hr-ap) [data-hr="ap"],html.hr-ap [data-hr="av"]{display:none!important}</style>
+<script id="pg-horaires-js">(function(){var d=new Date(Date.now()+3*3600000).toISOString().slice(0,10);if(d<"2026-10-29")return;document.documentElement.classList.add("hr-ap");document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll('script[type="application/ld+json"]').forEach(function(s){try{var o=JSON.parse(s.textContent);if(o&&o.openingHoursSpecification){o.openingHoursSpecification=[{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"], "opens": "12:00", "closes": "22:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "15:00", "closes": "22:00"}];s.textContent=JSON.stringify(o);}}catch(e){}});});})();</script>
 <style id="pg-pause-css">
 html:not(.pp-accueil),html:not(.pp-accueil) body{background:#5E1622!important}
 html:not(.pp-accueil) body>*:not(#pg-pause){display:none!important}
@@ -2304,7 +2309,7 @@ html.pp-accueil.pp-la{overflow:hidden}
     <div class="hero-content">
       <p class="hero-eyebrow">صنع في قطر · الدوحة <svg class="stk stk-sceau stk-inline stk-inline-sceau" aria-hidden="true" focusable="false"><use href="#stk-sceau"/></svg></p>
       <h1>من مطبخ بيتٍ قطري، اليوم.</h1>
-      <p class="hero-sub">مادلين وكوكيز وكيك، تُخبز حسب الطلب. اطلب قبل 5 PM ليصلك اليوم.</p>
+      <p class="hero-sub">مادلين وكوكيز وكيك، تُخبز حسب الطلب. اطلب قبل <span data-hr="av">5 PM</span><span data-hr="ap">9 PM</span> ليصلك اليوم.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://wa.me/97450040617" target="_blank" rel="noopener">اطلب الآن</a>
         <a class="btn btn-outline" href="#menu">تصفح القائمة</a>
@@ -2525,7 +2530,7 @@ html.pp-accueil.pp-la{overflow:hidden}
     <div class="menu-head">
       <span class="label" data-i18n="menu_label">طازج يوميًا، من السبت إلى الخميس</span>
       <h2 data-i18n="menu_title">القائمة</h2>
-      <p class="menu-note stk-pill">التوصيل في نفس اليوم متاح · اطلب قبل 5 PM</p>
+      <p class="menu-note stk-pill">التوصيل في نفس اليوم متاح · اطلب قبل <span data-hr="av">5 PM</span><span data-hr="ap">9 PM</span></p>
     
       <p class="scarce" id="scarce" hidden></p>
     </div>
@@ -2708,7 +2713,7 @@ html.pp-accueil.pp-la{overflow:hidden}
     <span class="label" data-i18n="proof_label">لماذا يعودون إلينا</span>
     <ul class="proof-facts">
       <li data-i18n="proof_fact1">يُخبز في صباح اليوم نفسه</li>
-      <li data-i18n="proof_fact2">طلبات اليوم نفسه حتى الساعة 5 مساءً</li>
+      <li data-i18n="proof_fact2">طلبات اليوم نفسه حتى الساعة <span data-hr="av">5 مساءً</span><span data-hr="ap">9 مساءً</span></li>
       <li data-i18n="proof_fact3">مخبز منزلي قطري مسجّل في الدوحة · رقم الرخصة 339339</li>
       <li class="proof-qatar" data-i18n="proof_fact4">صنع في قطر</li>
     </ul>
@@ -2773,8 +2778,10 @@ html.pp-accueil.pp-la{overflow:hidden}
     </div>
     <div class="info-card">
       <div class="info-row"><span data-i18n="info_location">الموقع</span><span data-i18n="info_location_val">مطبخ منزلي، الدوحة، قطر</span></div>
-      <div class="info-row"><span data-i18n="info_days">أيام الخَبز</span><span data-i18n="info_days_val">السبت – الخميس</span></div>
-      <div class="info-row"><span data-i18n="info_closed">إغلاق</span><span data-i18n="info_closed_val">الجمعة</span></div>
+      <div class="info-row" data-hr="av"><span data-i18n="info_days">أيام الخَبز</span><span data-i18n="info_days_val">السبت – الخميس</span></div>
+      <div class="info-row" data-hr="av"><span data-i18n="info_closed">إغلاق</span><span data-i18n="info_closed_val">الجمعة</span></div>
+      <div class="info-row" data-hr="ap"><span>مفتوح يوميًا</span><span>12 ظهرًا – 10 مساءً</span></div>
+      <div class="info-row" data-hr="ap"><span>الجمعة</span><span>3 مساءً – 10 مساءً</span></div>
       <div class="info-row"><span data-i18n="info_orders">الطلبات</span><span data-i18n="info_orders_val">عبر واتساب فقط</span></div>
       <div class="info-row"><span data-i18n="info_wa">واتساب</span><span><bdi dir="ltr">+974 5004 0617</bdi></span></div>
     </div>
@@ -2883,6 +2890,10 @@ html.pp-accueil.pp-la{overflow:hidden}
         <button type="button" class="chip" data-val="16">4 PM</button>
         <button type="button" class="chip" data-val="17">5 PM</button>
         <button type="button" class="chip" data-val="18">6 PM</button>
+        <button type="button" class="chip" data-val="19">7 PM</button>
+        <button type="button" class="chip" data-val="20">8 PM</button>
+        <button type="button" class="chip" data-val="21">9 PM</button>
+        <button type="button" class="chip" data-val="22">10 PM</button>
       </div>
       <div class="sameday-warn" id="hoursWarn">بعض الأوقات محجوزة في ذلك اليوم. اختر وقتًا آخر.</div>
       <div class="err-msg">الرجاء اختيار الوقت.</div>
@@ -3134,6 +3145,10 @@ html.pp-accueil.pp-la{overflow:hidden}
       co_slot_16:"4 PM",
       co_slot_17:"5 PM",
       co_slot_18:"6 PM",
+      co_slot_19:"7 PM",
+      co_slot_20:"8 PM",
+      co_slot_21:"9 PM",
+      co_slot_22:"10 PM",
       co_total:"الإجمالي",
       co_name:"الاسم",
       co_phone:"رقم واتساب الخاص بك",
@@ -3351,15 +3366,17 @@ html.pp-accueil.pp-la{overflow:hidden}
   var CFG = {
     wa: '97450040617',
     tz: 3,                   // le Qatar est à UTC+3 toute l'année, sans changement d'heure
-    // Au-delà, le jour même n'est plus proposé. Suit la fermeture : refuser
-    // toute commande du jour dès 15 h alors qu'on livre jusqu'à 18 h fermait
-    // la boutique trois heures avant l'heure. À 17 h il reste le créneau de
-    // 18 h, avec le battement d'une heure ci-dessous.
-    cutoffHour: 17,
+    // Les heures d'ouverture ne sont plus UNE règle mais deux, avec la date où
+    // l'on passe de l'une à l'autre (29/10/2026) : `horaires` vient de
+    // strings.py (HORAIRES_*), seule copie. Voir `regles(iso)` plus bas.
+    // L'heure limite du jour même n'est plus un nombre ici : elle SUIT la
+    // fermeture (`limiteDuJour`). Refuser toute commande du jour dès 15 h alors
+    // qu'on livrait jusqu'à 18 h fermait la boutique trois heures avant l'heure.
+    horaires: {"depuis": "2026-10-29", "avant": {"premiere": 12, "derniere": 18, "vendredi": null}, "apres": {"premiere": 12, "derniere": 22, "vendredi": 15}},
     minGap: 1,               // 1 h de battement minimum, quel que soit le produit
     closedWeekday: 5,        // 5 = vendredi
     railDays: 16,
-    slots: [12, 13, 14, 15, 16, 17, 18],        // heures pleines, injectées depuis strings.py
+    slots: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],        // heures pleines, injectées depuis strings.py
     lead: { item3: 18, item6: 18 },  // heures minimum entre la commande et la livraison
     cities: [["Doha", "الدوحة", 33], ["Al Rayyan", "الريان", 53], ["Al Wakrah", "الوكرة", 15], ["Al Wukair", "الوكير", 23], ["Lusail", "لوسيل", 60], ["Al Daayen", "الظعاين", 62], ["Umm Salal", "أم صلال", 62], ["Al Khor", "الخور", 64], ["Al Thakhira", "الذخيرة", 65], ["Simaisma", "سميسمة", 62], ["Al Shahaniya", "الشحانية", 63], ["Mesaieed", "مسيعيد", 60], ["Dukhan", "دخان", 68], ["Al Shamal", "الشمال", 70], ["Ras Laffan", "راس لفان", 67]],      // [nom anglais, nom arabe, tarif de livraison de secours]
     livraison: {"zones": {"90": 15, "91": 23, "49": 24, "46": 26, "47": 27, "48": 27, "50": 28, "45": 29, "40": 30, "41": 30, "42": 30, "43": 30, "44": 30, "56": 31, "26": 31, "27": 31, "28": 31, "15": 32, "25": 32, "14": 33, "17": 33, "18": 33, "24": 33, "38": 33, "39": 33, "5": 35, "6": 35, "7": 35, "16": 35, "19": 35, "22": 35, "23": 35, "1": 38, "2": 38, "3": 38, "4": 38, "12": 38, "13": 38, "37": 38, "57": 38, "58": 38, "10": 40, "11": 40, "20": 40, "21": 40, "35": 40, "36": 42, "55": 42, "34": 44, "32": 46, "54": 46, "61": 46, "31": 51, "33": 51, "63": 51, "64": 51, "30": 53, "52": 53, "53": 53, "65": 53, "67": 56, "51": 60, "66": 60, "68": 60, "92": 60, "69": 60, "93": 61, "81": 61, "71": 62, "70": 62, "82": 62, "80": 63, "95": 63, "74": 64, "83": 64, "94": 64, "72": 64, "73": 65, "98": 65, "75": 66, "97": 66, "76": 67, "85": 68, "86": 68, "84": 69, "96": 69, "77": 70, "78": 70, "79": 70}, "defaut": 33, "fourchette": [15, 90]} // { zones: { "90": 15, … }, defaut: 33 } — la table de strings.py
@@ -3837,6 +3854,30 @@ html.pp-accueil.pp-la{overflow:hidden}
     return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
   }
 
+  /* ---------- les horaires, jour par jour (29/10/2026) ----------
+     Avant : 12h-18h sauf le vendredi. Depuis le 29/10 : 12h-22h, et 15h-22h le
+     vendredi. La règle qui vaut est celle du jour LIVRÉ — une cliente qui
+     commande le 20 pour le 30 voit les heures du 30 —, sauf la limite du jour
+     même, qui est celle d'AUJOURD'HUI. Le site bascule seul à minuit, heure de
+     Doha : aucun dépôt, parce que chaque calcul relit la date. */
+  function regles(iso){
+    return iso >= CFG.horaires.depuis ? CFG.horaires.apres : CFG.horaires.avant;
+  }
+  function jourDeSemaine(iso){ return new Date(iso + 'T12:00:00').getDay(); }
+  // Les heures qu'un jour offre, du matin au soir ; vide = jour fermé.
+  function heuresDuJour(iso){
+    var r = regles(iso), debut = r.premiere;
+    if(jourDeSemaine(iso) === CFG.closedWeekday){
+      if(r.vendredi == null) return [];
+      debut = r.vendredi;
+    }
+    return CFG.slots.filter(function(h){ return h >= debut && h <= r.derniere; });
+  }
+  function heureDuJour(iso, hour){ return heuresDuJour(iso).indexOf(hour) !== -1; }
+  // Au-delà de cette heure, le jour même n'est plus proposé : la dernière
+  // heure de livraison, moins le battement.
+  function limiteDuJour(iso){ return regles(iso).derniere - CFG.minGap; }
+
   // Ce que le panier contient VRAIMENT, produit par produit : les articles,
   // et ce que chaque offre au panier renferme — ses lignes fixes comme ses
   // choix (la liste de la carte, que `syncContenu` tient à jour). Un Majlis
@@ -3883,7 +3924,8 @@ html.pp-accueil.pp-la{overflow:hidden}
   // cliente qu'une heure est prise plutôt que passée
   function slotLibre(iso, hour){
     var now = qatarNow();
-    if(iso === isoOf(now) && now.getHours() >= CFG.cutoffHour) return false;
+    if(!heureDuJour(iso, hour)) return false;     // ce jour-là n'offre pas cette heure
+    if(iso === isoOf(now) && now.getHours() >= limiteDuJour(iso)) return false;
     var d = new Date(iso + 'T00:00:00');
     d.setHours(hour, 0, 0, 0);
     var gap = (d - now) / 3600000;
@@ -3946,13 +3988,13 @@ html.pp-accueil.pp-la{overflow:hidden}
     var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     var start = new Date(today);
     // après l'heure limite, le jour même n'est plus proposé du tout
-    if(now.getHours() >= CFG.cutoffHour) start.setDate(start.getDate() + 1);
+    if(now.getHours() >= limiteDuJour(isoOf(today))) start.setDate(start.getDate() + 1);
 
     for(var i = 0; i < CFG.railDays; i++){
       var d = new Date(start); d.setDate(start.getDate() + i);
       var iso = isoOf(d);
       var isToday = d.getTime() === today.getTime();
-      var closed = d.getDay() === CFG.closedWeekday;
+      var closed = heuresDuJour(iso).length === 0;
 
       var b = document.createElement('button');
       b.type = 'button';
@@ -3987,8 +4029,9 @@ html.pp-accueil.pp-la{overflow:hidden}
     for(var i = 0; i < chips.length; i++){
       if(chips[i].classList.contains('closed')) continue;
       var iso = chips[i].getAttribute('data-iso');
-      for(var k = 0; k < CFG.slots.length; k++){
-        if(!slotOk(iso, CFG.slots[k])) return true;
+      var offertes = heuresDuJour(iso);
+      for(var k = 0; k < offertes.length; k++){
+        if(!slotOk(iso, offertes[k])) return true;
       }
     }
     return false;
@@ -4022,13 +4065,13 @@ html.pp-accueil.pp-la{overflow:hidden}
     if(!ligne) return;
     var now = qatarNow();
     var depart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    if(now.getHours() >= CFG.cutoffHour) depart.setDate(depart.getDate() + 1);
+    if(now.getHours() >= limiteDuJour(isoOf(depart))) depart.setDate(depart.getDate() + 1);
 
     var trouve = null;
     for(var i = 0; i < CFG.railDays && !trouve; i++){
       var d = new Date(depart); d.setDate(depart.getDate() + i);
-      if(d.getDay() === CFG.closedWeekday) continue;
       var iso = isoOf(d), q = QUOTAS[iso];
+      if(!heuresDuJour(iso).length) continue;
       if(q && q.restantes && dayOk(iso)) trouve = { d: d, n: q.restantes };
     }
     if(!trouve){ ligne.hidden = true; return; }
@@ -4073,8 +4116,17 @@ html.pp-accueil.pp-la{overflow:hidden}
   function syncSlots(){
     var host = $('slotChips');
     if(!host) return;
+    // Sans jour retenu, on montre les heures d'AUJOURD'HUI ; avec un jour, celles
+    // de ce jour-là. Une heure que le jour n'offre pas se CACHE : la griser la
+    // ferait passer pour « prise », et l'avertissement des heures prises
+    // (`hoursWarn`) s'y tromperait.
+    var jourRef = S.date || isoOf(qatarNow());
     host.querySelectorAll('.chip').forEach(function(c){
-      var shut = S.date ? !slotOk(S.date, parseInt(c.getAttribute('data-val'), 10)) : false;
+      var h = parseInt(c.getAttribute('data-val'), 10);
+      var offerte = S.date ? heureDuJour(S.date, h)
+                           : (h >= regles(jourRef).premiere && h <= regles(jourRef).derniere);
+      c.hidden = !offerte;
+      var shut = S.date ? !slotOk(S.date, h) : false;
       c.disabled = shut;
       c.classList.toggle('frozen', shut);
       if(shut && S.slot === c.getAttribute('data-val')){
