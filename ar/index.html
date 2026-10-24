@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261020-2001">
+<meta name="pg-build" content="20261024-2027">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1135,7 +1135,8 @@
      première rangée et la phrase en haut de la seconde restent collés, la
      carte du coffret couvrant les deux rangées. */
   .hero-content{position:static;z-index:auto;color:var(--deep-maroon);padding:0;max-width:none;margin:0;text-align:start;display:block;grid-column:1;grid-row:1;align-self:end;}
-  .hero .delivery-line{grid-column:1;grid-row:2;align-self:start;margin:0;}
+  .hero-aside{grid-column:1;grid-row:2;align-self:start;min-width:0;}
+  .hero .delivery-line{margin:0;}
   .hero-boxes{grid-column:2;grid-row:1 / 3;min-width:0;}
   .hero-eyebrow{
     font-family:var(--police);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;
@@ -1535,7 +1536,7 @@
      cartes (`0 2px 14px -8px rgba(94,22,34,0.3)`). */
   @media(max-width:899px){
     .hero-grid{gap:16px;padding-top:18px;}
-    .hero-content,.hero-boxes,.hero .delivery-line{grid-column:auto;grid-row:auto;align-self:auto;}
+    .hero-content,.hero-boxes,.hero-aside{grid-column:auto;grid-row:auto;align-self:auto;}
     .hero-content{display:block;background:var(--vert-clair);border-radius:var(--r);padding:24px 20px 22px;}
     .hero-content > *{margin:0;max-width:none;}
     .hero h1{margin-top:10px;}
@@ -1989,6 +1990,40 @@
     .menu-card.is-new .menu-card-body{padding:28px 36px;max-width:560px;}
     .menu-card.is-new h3{font-size:1.9rem;}
   }
+
+  /* ================= L'ARRIVÉE D'UNE VISITE FROIDE — 24/10/2026 =================
+     Samer, « on veut faire de 1 à 5 », après la mesure à 390 px : le coffret à
+     490 QR d'abord, le premier produit à 190 QR après deux écrans, la livraison
+     sous le pli. Trois blocs neufs dans le premier écran, aucune couleur neuve :
+     — `.hero-proof` : deux pastilles blanches sous le sous-titre ;
+     — `.hero-from` + `.hero-start` : « Prices from … » et la première fiche du
+       menu en une ligne, avec son « Add » (copie vivante : checkout.js,
+       `peindreApercu`) ;
+     — `.hero-aside` : ce produit et la phrase de livraison, AVANT la carte du
+       coffret. Sur ordinateur il reprend la place de la phrase (colonne de
+       gauche, seconde rangée). */
+  .hero-proof{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
+  .hero-proof li{background:#fff;color:var(--deep-maroon);font-weight:700;font-size:0.82rem;line-height:1.2;
+    padding:5px 11px;border-radius:999px;box-shadow:0 1px 3px -1px rgba(94,22,34,0.25);}
+  .hero-aside{display:flex;flex-direction:column;gap:10px;}
+  .hero-from{margin:0;color:var(--coral);font-weight:700;font-size:0.95rem;line-height:1.3;}
+  .hero-from[hidden]{display:none;}
+  .hero-from b{font-family:var(--police-serif);font-weight:700;}
+  .hero-start{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:2px 12px;
+    background:#fff;border:1px solid rgba(94,22,34,0.14);border-radius:var(--r);padding:8px 12px 8px 8px;
+    box-shadow:0 2px 14px -8px rgba(94,22,34,0.3);}
+  .hero-start[hidden]{display:none;}
+  .hero-start-img{grid-column:1;grid-row:1 / 3;width:64px;height:64px;object-fit:cover;border-radius:12px;display:block;}
+  .hero-start-text{grid-column:2;grid-row:1 / 3;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .hero-start-name{font-family:var(--police-serif);font-weight:700;color:var(--deep-maroon);font-size:1.05rem;line-height:1.15;}
+  .hero-start-meta{color:var(--maroon);font-size:0.85rem;line-height:1.3;}
+  .hero-start-price{grid-column:3;grid-row:1;justify-self:end;font-family:var(--police-serif);font-weight:700;color:var(--deep-maroon);font-size:1.05rem;white-space:nowrap;}
+  .hero-start-add{grid-column:3;grid-row:2;justify-self:end;display:inline-flex;align-items:center;gap:6px;min-height:40px;
+    padding:0 18px;border:0;border-radius:999px;background:var(--vert);color:var(--cream);font:inherit;font-weight:700;font-size:0.95rem;cursor:pointer;}
+  .hero-start-add:hover{background:var(--vert-hover);}
+  .hero-start-n{background:var(--gold);color:var(--deep-maroon);border-radius:999px;padding:0 7px;font-size:0.8rem;line-height:1.5;}
+  .hero-start-n[hidden]{display:none;}
+  [dir="rtl"] .hero-start-add{letter-spacing:0;}
 </style>
 <script type="application/ld+json">
 {
@@ -2310,11 +2345,21 @@ html.pp-accueil.pp-la{overflow:hidden}
       <p class="hero-eyebrow">صنع في قطر · الدوحة <svg class="stk stk-sceau stk-inline stk-inline-sceau" aria-hidden="true" focusable="false"><use href="#stk-sceau"/></svg></p>
       <h1>من مطبخ بيتٍ قطري، اليوم.</h1>
       <p class="hero-sub">مادلين وكوكيز وكيك، تُخبز حسب الطلب. اطلب قبل <span data-hr="av">5 PM</span><span data-hr="ap">8 PM</span> ليصلك اليوم.</p>
+      <ul class="hero-proof"><li>يُخبز في صباح اليوم نفسه</li><li>مخبز منزلي مسجّل · الدوحة</li></ul>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="https://wa.me/97450040617" target="_blank" rel="noopener">اطلب الآن</a>
-        <a class="btn btn-outline" href="#menu">تصفح القائمة</a>
+        <a class="btn btn-primary" href="#menu">اختر حلوياتك</a>
       </div>
       <svg class="stk stk-cookie stk-hero" aria-hidden="true" focusable="false"><use href="#stk-cookie"/></svg>
+    </div>
+    <div class="hero-aside">
+      <p class="hero-from" dir="auto">الأسعار من <b dir="ltr">190 QR</b></p>
+      <div class="hero-start" data-start-item="item1">
+        <img class="hero-start-img" src="/img/madeleine-box-doha-192.webp" alt="" width="192" height="240" decoding="async" fetchpriority="low">
+        <div class="hero-start-text"><span class="hero-start-name">مادلين</span><span class="hero-start-meta">12 حبة</span></div>
+        <span class="hero-start-price" dir="ltr">190 QR</span>
+        <button type="button" class="hero-start-add"><span>أضف</span><span class="hero-start-n" hidden></span></button>
+      </div>
+      <p class="delivery-line">نوصّل إلى بابك في أي مكان في قطر عبر سائقنا. التوصيل يُحسب إضافةً إلى المنتجات: من 15 إلى 90 QR حسب المسافة من مطبخنا في الوكرة. نؤكده لك مع الإجمالي عبر واتساب، وتدفع مرة واحدة.</p>
     </div>
     <div class="hero-boxes" id="box">
       <div class="hero-track" id="heroTrack" aria-roledescription="carousel" aria-label="صناديقنا">
@@ -2515,20 +2560,13 @@ html.pp-accueil.pp-la{overflow:hidden}
       </div>
       <div class="hero-dots"><button type="button" class="hero-dot" data-dot="0" aria-label="اعرض صندوق الاكتشاف" aria-current="true"></button><button type="button" class="hero-dot" data-dot="1" aria-label="اعرض مجلس 4 +" aria-current="false"></button><button type="button" class="hero-dot" data-dot="2" aria-label="اعرض مجلس 6 +" aria-current="false"></button><button type="button" class="hero-dot" data-dot="3" aria-label="اعرض مجلس 10 +" aria-current="false"></button></div>
     </div>
-    <p class="delivery-line">نوصّل إلى بابك في أي مكان في قطر عبر سائقنا. التوصيل يُحسب إضافةً إلى المنتجات: من 15 إلى 90 QR حسب المسافة من مطبخنا في الوكرة. نؤكده لك مع الإجمالي عبر واتساب، وتدفع مرة واحدة.</p>
   </div>
 </section>
 
-<section class="qatar-band" id="qatar">
-  <div class="container qatar-inner">
-    <svg class="stk stk-sceau qatar-stamp" aria-hidden="true" focusable="false"><use href="#stk-sceau"/></svg>
-    <div><p class="qatar-t">صنع في قطر، بأيدٍ قطرية.</p><p class="qatar-s">مخبز منزلي مسجّل، من مطبخ عائلي في الدوحة.</p></div>
-  </div>
-</section>
 <section class="menu" id="menu">
   <div class="container">
     <div class="menu-head">
-      <span class="label" data-i18n="menu_label">طازج يوميًا، من السبت إلى الخميس</span>
+      <span class="label" data-i18n="menu_label"><span data-hr="av">طازج يوميًا، من السبت إلى الخميس</span><span data-hr="ap">طازج يوميًا</span></span>
       <h2 data-i18n="menu_title">القائمة</h2>
       <p class="menu-note stk-pill">التوصيل في نفس اليوم متاح · اطلب قبل <span data-hr="av">5 PM</span><span data-hr="ap">8 PM</span></p>
     
@@ -2700,6 +2738,13 @@ html.pp-accueil.pp-la{overflow:hidden}
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="qatar-band" id="qatar">
+  <div class="container qatar-inner">
+    <svg class="stk stk-sceau qatar-stamp" aria-hidden="true" focusable="false"><use href="#stk-sceau"/></svg>
+    <div><p class="qatar-t">صنع في قطر، بأيدٍ قطرية.</p><p class="qatar-s">مخبز منزلي مسجّل، من مطبخ عائلي في الدوحة.</p></div>
   </div>
 </section>
 
@@ -3220,8 +3265,10 @@ html.pp-accueil.pp-la{overflow:hidden}
       qatar_t:"صنع في قطر، بأيدٍ قطرية.",
       qatar_s:"مخبز منزلي مسجّل، من مطبخ عائلي في الدوحة.",
       hero_sub:"مادلين وكوكيز وكيك، تُخبز حسب الطلب. اطلب قبل 5 PM ليصلك اليوم.",
-      hero_btn_order:"اطلب الآن",
-      hero_btn_menu:"تصفح القائمة",
+      hero_btn_order:"اختر حلوياتك",
+      hero_proof1:"يُخبز في صباح اليوم نفسه",
+      hero_proof2:"مخبز منزلي مسجّل · الدوحة",
+      hero_from:"الأسعار من %s",
       hero_box_add:"أضف الصندوق",
       box_choose_add:"اختر وأضف",
       box_you_choose:"أنت تختار ما بداخله",
@@ -3841,8 +3888,62 @@ html.pp-accueil.pp-la{overflow:hidden}
       row.classList.toggle('has-qty', (ORDER[row.getAttribute('data-item')] || 0) > 0);
     });
     orderBar.classList.toggle('active', active);
+    peindreApercu();
     if(sheet.classList.contains('open')) paint();
   }
+
+  /* ---------- le produit d'appel du premier écran (24/10/2026) ----------
+     Samer, « de 1 à 5 » : un produit à 190 QR dès le premier écran, et « Prices
+     from ». Ce n'est PAS une seconde rangée de panier — `.qty-row[data-item]`
+     doit rester unique par produit, `bump()` la cherche par `querySelector` — :
+     c'est une COPIE VIVANTE de la première fiche du menu en vente, repeinte à
+     chaque `refresh()`. L'app change un prix, renomme un produit, en retire un
+     de la vente ou change l'ordre des fiches : le premier écran suit, jamais
+     l'inverse. Son bouton ajoute par `bump()`, donc compte un panier comme le
+     bouton de la fiche. */
+  function peindreApercu(){
+    var dep = document.querySelector('.hero-start');
+    if(!dep) return;
+    var cartes = [].slice.call(document.querySelectorAll('.menu-grid .menu-card'))
+      .filter(function(c){ return !c.classList.contains('is-soldout') && c.querySelector('.qty-row[data-item]'); });
+    var carte = cartes[0];
+    var from = document.querySelector('.hero-from b');
+    if(!carte){ dep.hidden = true; if(from) from.parentNode.hidden = true; return; }
+    dep.hidden = false;
+    var id = carte.querySelector('.qty-row[data-item]').getAttribute('data-item');
+    dep.setAttribute('data-start-item', id);
+    function mot(sel, txt){ var e = dep.querySelector(sel); if(e && txt != null && e.textContent !== txt) e.textContent = txt; }
+    mot('.hero-start-name', carte.querySelector('h3').textContent.trim());
+    var pieces = carte.querySelector('.qty-note-t'), prix = carte.querySelector('.qty-note-p');
+    mot('.hero-start-meta', pieces ? pieces.textContent.trim() : '');
+    mot('.hero-start-price', prix ? prix.textContent.trim() : '');
+    var photo = carte.querySelector('.img-wrap img'), mienne = dep.querySelector('img');
+    if(photo && mienne){
+      var src = (photo.getAttribute('src') || '').replace(/\.webp$/, '') + '-192.webp';   // la vignette (4-BRANDING/photos/vignettes.py), pas la 480 : 12 Ko au lieu de 55
+      if(src.length > 12 && mienne.getAttribute('src') !== src) mienne.setAttribute('src', src);
+    }
+    var n = ORDER[id] || 0, puce = dep.querySelector('.hero-start-n');
+    if(puce){ puce.hidden = !n; puce.textContent = n ? '×' + n : ''; }
+    // « Prices from » : le plus petit prix des fiches EN VENTE.
+    if(from){
+      var tous = [].slice.call(document.querySelectorAll('.menu-grid .menu-card:not(.is-soldout) .qty-row[data-item]'))
+        .map(function(r){ return parseInt(r.getAttribute('data-price'), 10); })
+        .filter(function(v){ return v > 0; });
+      from.parentNode.hidden = !tous.length;
+      if(tous.length){
+        var txt = Math.min.apply(null, tous) + ' ' + T('qr');
+        if(from.textContent !== txt) from.textContent = txt;
+      }
+    }
+  }
+  (function(){
+    var bouton = document.querySelector('.hero-start-add');
+    if(!bouton) return;
+    bouton.addEventListener('click', function(){
+      var id = document.querySelector('.hero-start').getAttribute('data-start-item');
+      if(id) bump(id, 1);
+    });
+  })();
 
   /* ---------- dates et créneaux ---------- */
   // Toutes les règles de date se lisent à l'heure du Qatar, jamais à celle de
