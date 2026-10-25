@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261025-0247">
+<meta name="pg-build" content="20261025-0333">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1996,9 +1996,9 @@
      490 QR d'abord, le premier produit à 190 QR après deux écrans, la livraison
      sous le pli. Trois blocs neufs dans le premier écran, aucune couleur neuve :
      — `.hero-proof` : deux pastilles blanches sous le sous-titre ;
-     — `.hero-from` + `.hero-start` : « Prices from … » et la première fiche du
-       menu en une ligne, avec son « Add » (copie vivante : checkout.js,
-       `peindreApercu`) ;
+     — `.hero-start` : un produit du menu en une ligne, avec son « Add » (copie
+       vivante : checkout.js, `peindreApercu`) ; la ligne « Prices from … » qui
+       l'accompagnait est retirée depuis le 25/10/2026 (Samer) ;
      — `.hero-aside` : ce produit et la phrase de livraison, AVANT la carte du
        coffret. Sur ordinateur il reprend la place de la phrase (colonne de
        gauche, seconde rangée). */
@@ -2006,9 +2006,6 @@
   .hero-proof li{background:#fff;color:var(--deep-maroon);font-weight:700;font-size:0.82rem;line-height:1.2;
     padding:5px 11px;border-radius:999px;box-shadow:0 1px 3px -1px rgba(94,22,34,0.25);}
   .hero-aside{display:flex;flex-direction:column;gap:10px;}
-  .hero-from{margin:0;color:var(--coral);font-weight:700;font-size:0.95rem;line-height:1.3;}
-  .hero-from[hidden]{display:none;}
-  .hero-from b{font-family:var(--police-serif);font-weight:700;}
   .hero-start{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:2px 12px;
     background:#fff;border:1px solid rgba(94,22,34,0.14);border-radius:var(--r);padding:8px 12px 8px 8px;
     box-shadow:0 2px 14px -8px rgba(94,22,34,0.3);}
@@ -2352,8 +2349,7 @@ html.pp-accueil.pp-la{overflow:hidden}
       <svg class="stk stk-cookie stk-hero" aria-hidden="true" focusable="false"><use href="#stk-cookie"/></svg>
     </div>
     <div class="hero-aside">
-      <p class="hero-from" dir="auto">الأسعار من <b dir="ltr">190 QR</b></p>
-      <div class="hero-start" data-start-item="item1" data-voulu="item1" data-candidats="[{&quot;id&quot;: &quot;item1&quot;, &quot;p&quot;: 3, &quot;nom&quot;: &quot;مادلين&quot;, &quot;pieces&quot;: &quot;12 حبة&quot;, &quot;prix&quot;: &quot;190 QR&quot;, &quot;photo&quot;: &quot;madeleine-box-doha&quot;}, {&quot;id&quot;: &quot;item8&quot;, &quot;p&quot;: 1, &quot;nom&quot;: &quot;كوكيز بقطع الشوكولاتة&quot;, &quot;pieces&quot;: &quot;12 حبة&quot;, &quot;prix&quot;: &quot;200 QR&quot;, &quot;photo&quot;: &quot;chamaral-chocolate-chunk-doha&quot;}, {&quot;id&quot;: &quot;item4&quot;, &quot;p&quot;: 1, &quot;nom&quot;: &quot;كيكة الخوخ المقلوبة&quot;, &quot;pieces&quot;: &quot;كيكة واحدة&quot;, &quot;prix&quot;: &quot;290 QR&quot;, &quot;photo&quot;: &quot;upside-down-peach-cake-doha&quot;}]">
+      <div class="hero-start" data-start-item="item1" data-voulu="item1" data-candidats="[{&quot;id&quot;: &quot;item1&quot;, &quot;p&quot;: 2, &quot;nom&quot;: &quot;مادلين&quot;, &quot;pieces&quot;: &quot;12 حبة&quot;, &quot;prix&quot;: &quot;190 QR&quot;, &quot;photo&quot;: &quot;madeleine-box-doha&quot;}, {&quot;id&quot;: &quot;item2&quot;, &quot;p&quot;: 2, &quot;nom&quot;: &quot;مادلين صغيرة&quot;, &quot;pieces&quot;: &quot;40 قطعة&quot;, &quot;prix&quot;: &quot;190 QR&quot;, &quot;photo&quot;: &quot;petit-madeleine-doha&quot;}, {&quot;id&quot;: &quot;item8&quot;, &quot;p&quot;: 1, &quot;nom&quot;: &quot;كوكيز بقطع الشوكولاتة&quot;, &quot;pieces&quot;: &quot;12 حبة&quot;, &quot;prix&quot;: &quot;200 QR&quot;, &quot;photo&quot;: &quot;chamaral-chocolate-chunk-doha&quot;}, {&quot;id&quot;: &quot;item4&quot;, &quot;p&quot;: 1, &quot;nom&quot;: &quot;كيكة الخوخ المقلوبة&quot;, &quot;pieces&quot;: &quot;كيكة واحدة&quot;, &quot;prix&quot;: &quot;290 QR&quot;, &quot;photo&quot;: &quot;upside-down-peach-cake-doha&quot;}]">
         <img class="hero-start-img" src="/img/madeleine-box-doha-192.webp" alt="" width="192" height="240" decoding="async" fetchpriority="low">
         <div class="hero-start-text"><span class="hero-start-name">مادلين</span><span class="hero-start-meta">12 حبة</span></div>
         <span class="hero-start-price" dir="ltr">190 QR</span>
@@ -3269,7 +3265,6 @@ html.pp-accueil.pp-la{overflow:hidden}
       hero_btn_order:"اختر حلوياتك",
       hero_proof1:"يُخبز في صباح اليوم نفسه",
       hero_proof2:"مخبز منزلي مسجّل · الدوحة",
-      hero_from:"الأسعار من %s",
       hero_box_add:"أضف الصندوق",
       box_choose_add:"اختر وأضف",
       box_you_choose:"أنت تختار ما بداخله",
@@ -3894,8 +3889,8 @@ html.pp-accueil.pp-la{overflow:hidden}
   }
 
   /* ---------- le produit d'appel du premier écran (24/10/2026) ----------
-     Samer, « de 1 à 5 » : un produit à 190 QR dès le premier écran, et « Prices
-     from ». Ce n'est PAS une seconde rangée de panier — `.qty-row[data-item]`
+     Samer, « de 1 à 5 » : un produit dès le premier écran (la ligne « Prices
+     from », qui l'accompagnait, est retirée depuis le 25/10/2026). Ce n'est PAS une seconde rangée de panier — `.qty-row[data-item]`
      doit rester unique par produit, `bump()` la cherche par `querySelector` — :
      c'est une COPIE VIVANTE de la première fiche du menu en vente, repeinte à
      chaque `refresh()`. L'app change un prix, renomme un produit, en retire un
@@ -3918,8 +3913,7 @@ html.pp-accueil.pp-la{overflow:hidden}
     var carte = cartes.filter(function(c){
       return c.querySelector('.qty-row[data-item]').getAttribute('data-item') === voulu;
     })[0] || cartes[0];
-    var from = document.querySelector('.hero-from b');
-    if(!carte){ dep.hidden = true; if(from) from.parentNode.hidden = true; return; }
+    if(!carte){ dep.hidden = true; return; }
     dep.hidden = false;
     var id = carte.querySelector('.qty-row[data-item]').getAttribute('data-item');
     dep.setAttribute('data-start-item', id);
@@ -3935,17 +3929,6 @@ html.pp-accueil.pp-la{overflow:hidden}
     }
     var n = ORDER[id] || 0, puce = dep.querySelector('.hero-start-n');
     if(puce){ puce.hidden = !n; puce.textContent = n ? '×' + n : ''; }
-    // « Prices from » : le plus petit prix des fiches EN VENTE.
-    if(from){
-      var tous = [].slice.call(document.querySelectorAll('.menu-grid .menu-card:not(.is-soldout) .qty-row[data-item]'))
-        .map(function(r){ return parseInt(r.getAttribute('data-price'), 10); })
-        .filter(function(v){ return v > 0; });
-      from.parentNode.hidden = !tous.length;
-      if(tous.length){
-        var txt = Math.min.apply(null, tous) + ' ' + T('qr');
-        if(from.textContent !== txt) from.textContent = txt;
-      }
-    }
   }
   (function(){
     var bouton = document.querySelector('.hero-start-add');
