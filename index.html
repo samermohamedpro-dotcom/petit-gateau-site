@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261027-0203">
+<meta name="pg-build" content="20261027-2258">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -483,7 +483,7 @@
     transition:background .15s,border-color .15s,color .15s;
   }
   /* Une heure que le jour retenu n'offre pas (vendredi avant 15h, soirée d'avant le
-     29/10/2026) : cachée, jamais grisée — une case grise se lit « prise ». */
+     28/10/2026) : cachée, jamais grisée — une case grise se lit « prise ». */
   .chip[hidden]{display:none !important;}
   .chip[aria-pressed="true"]{
     background:var(--deep-maroon);border-color:var(--deep-maroon);color:var(--cream);
@@ -2268,7 +2268,7 @@
 }
 </script>
 <style id="pg-horaires-css">html:not(.hr-ap) [data-hr="ap"],html.hr-ap [data-hr="av"]{display:none!important}</style>
-<script id="pg-horaires-js">(function(){var d=new Date(Date.now()+3*3600000).toISOString().slice(0,10);if(d<"2026-10-29")return;document.documentElement.classList.add("hr-ap");document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll('script[type="application/ld+json"]').forEach(function(s){try{var o=JSON.parse(s.textContent);if(o&&o.openingHoursSpecification){o.openingHoursSpecification=[{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"], "opens": "12:00", "closes": "20:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "15:00", "closes": "20:00"}];s.textContent=JSON.stringify(o);}}catch(e){}});});})();</script>
+<script id="pg-horaires-js">(function(){var d=new Date(Date.now()+3*3600000).toISOString().slice(0,10);if(d<"2026-10-28")return;document.documentElement.classList.add("hr-ap");document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll('script[type="application/ld+json"]').forEach(function(s){try{var o=JSON.parse(s.textContent);if(o&&o.openingHoursSpecification){o.openingHoursSpecification=[{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"], "opens": "12:00", "closes": "20:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "15:00", "closes": "20:00"}];s.textContent=JSON.stringify(o);}}catch(e){}});});})();</script>
 <style id="pg-pause-css">
 html:not(.pp-accueil),html:not(.pp-accueil) body{background:#5E1622!important}
 html:not(.pp-accueil) body>*:not(#pg-pause){display:none!important}
@@ -3405,15 +3405,15 @@ html.pp-accueil.pp-la{overflow:hidden}
     wa: '97450040617',
     tz: 3,                   // le Qatar est à UTC+3 toute l'année, sans changement d'heure
     // Les heures d'ouverture ne sont plus UNE règle mais deux, avec la date où
-    // l'on passe de l'une à l'autre (29/10/2026) : `horaires` vient de
+    // l'on passe de l'une à l'autre (28/10/2026) : `horaires` vient de
     // strings.py (HORAIRES_*), seule copie. Voir `regles(iso)` plus bas.
     // L'heure limite du jour même n'est plus un nombre ici : elle SUIT la
     // fermeture (`limiteDuJour`). Refuser toute commande du jour dès 15 h alors
     // qu'on livrait jusqu'à 18 h fermait la boutique trois heures avant l'heure.
-    horaires: {"depuis": "2026-10-29", "avant": {"premiere": 12, "derniere": 18, "vendredi": null, "limite": 17, "battement_min": 60, "dernier_creneau_libre": false}, "apres": {"premiere": 12, "derniere": 20, "vendredi": 15, "limite": 20, "battement_min": 15, "dernier_creneau_libre": true}},
+    horaires: {"depuis": "2026-10-28", "avant": {"premiere": 12, "derniere": 18, "vendredi": null, "limite": 17, "battement_min": 60, "dernier_creneau_libre": false}, "apres": {"premiere": 12, "derniere": 20, "vendredi": 15, "limite": 20, "battement_min": 15, "dernier_creneau_libre": true}},
     // Le battement minimum entre la commande et l'heure choisie ne vit plus ici : il est
     // propre à chaque règle d'horaires (`battement_min`, strings.py) — 1 h jusqu'au
-    // 28/10/2026, 15 min depuis. Voir `battementDe(iso)`.
+    // 27/10/2026, 15 min depuis. Voir `battementDe(iso)`.
     closedWeekday: 5,        // 5 = vendredi
     railDays: 16,
     slots: [12, 13, 14, 15, 16, 17, 18, 19, 20],        // heures pleines, injectées depuis strings.py
@@ -3946,8 +3946,8 @@ html.pp-accueil.pp-la{overflow:hidden}
     return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
   }
 
-  /* ---------- les horaires, jour par jour (29/10/2026) ----------
-     Avant : 12h-18h sauf le vendredi. Depuis le 29/10 : 12h-22h, et 15h-22h le
+  /* ---------- les horaires, jour par jour (28/10/2026) ----------
+     Avant : 12h-18h sauf le vendredi. Depuis le 28/10 : 12h-20h, et 15h-20h le
      vendredi. La règle qui vaut est celle du jour LIVRÉ — une cliente qui
      commande le 20 pour le 30 voit les heures du 30 —, sauf la limite du jour
      même, qui est celle d'AUJOURD'HUI. Le site bascule seul à minuit, heure de
@@ -3967,7 +3967,7 @@ html.pp-accueil.pp-la{overflow:hidden}
   }
   function heureDuJour(iso, hour){ return heuresDuJour(iso).indexOf(hour) !== -1; }
   // Au-delà de cette heure, le jour même n'est plus proposé. Ce n'est PLUS la
-  // fermeture moins le battement : depuis le 29/10/2026 on livre jusqu'à 22h mais
+  // fermeture moins le battement : depuis le 28/10/2026 on livre jusqu'à 22h mais
   // on ne prend plus de commande après 20h (la pâtissière, 20/10/2026) — `limite`.
   function limiteDuJour(iso){ return regles(iso).limite; }
   // Le battement entre la commande et l'heure choisie, en heures.
@@ -4025,7 +4025,7 @@ html.pp-accueil.pp-la{overflow:hidden}
     d.setHours(hour, 0, 0, 0);
     var gap = (d - now) / 3600000;
     // le battement de la règle du jour pour tout le monde (1 h, puis 15 min depuis
-    // le 29/10/2026), davantage si un produit du panier demande plus de préparation.
+    // le 28/10/2026), davantage si un produit du panier demande plus de préparation.
     // SAUF le dernier créneau quand la règle le dit (depuis le 27/10/2026) : la cliente
     // commande jusqu'à 20h pile et ne voit rien après 20h, donc 20h reste proposé à 19h59.
     var r = regles(iso);
