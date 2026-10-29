@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261028-0132">
+<meta name="pg-build" content="20261029-1638">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -723,9 +723,16 @@
      En dessous de 980 px, deux colonnes — du plus petit téléphone à la
      tablette. `minmax(0,1fr)` évite qu'un nom de produit très long repousse
      à nouveau la page hors de l'écran.
+
+     TROIS colonnes depuis le 29/10/2026 (choix « B » de Samer, sur captures
+     A / B / C à 390 et 1440 px) : l'Upside-Down Banana Cake prend le bandeau
+     « New », et il reste NEUF fiches dessous — 4 + 4 + 1 en quatre colonnes,
+     3 + 3 + 3 en trois. Les photos y gagnent ; le menu s'allonge d'une ligne.
+     Le jour où le compte change (une fiche de plus, ou NOUVEAUTES vidé), ce
+     choix se refait : `verif-mise-en-page.mjs` le dira.
      ========================================================================= */
   @media(min-width:980px){
-    .menu-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(18px,2vw,28px);}
+    .menu-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,2vw,28px);}
   }
 
   /* ================= MENU SUR TÉLÉPHONE : DEUX FICHES PAR LIGNE ==============
@@ -1991,6 +1998,32 @@
     .menu-card.is-new h3{font-size:1.9rem;}
   }
 
+  /* ================= LA FICHE SEULE — 29/10/2026 =================
+     Sous 980 px le menu a deux colonnes, et neuf fiches sous le bandeau « New »
+     en laissaient une seule sur la dernière ligne. Choix « B » de Samer : elle
+     prend toute la ligne, photo à côté du texte — le bandeau du haut, sans
+     pastille ni liseré corail, pour ne pas se lire comme une seconde nouveauté.
+     Sur ordinateur (trois colonnes, 3 + 3 + 3) elle redevient une fiche comme
+     les autres : d'où le `max-width`, qu'aucune règle du bandeau « New » n'a.
+
+     Qui est seule, c'est la page qui le dit : build2.py § 13 bis la marque
+     dans la page écrite, checkout.js (`marquerLaSeule`) la remarque chaque
+     fois que le catalogue de l'app réordonne le menu. Les tailles sont
+     celles du bandeau « New », reprises ici parce qu'elles n'y valent que
+     sous 980 px. */
+  @media(max-width:979px){
+    .menu-card.is-seule{grid-column:1 / -1;flex-direction:row;}
+    .menu-card.is-seule .img-wrap{flex:0 0 46%;aspect-ratio:4/5;}
+    .menu-card.is-seule .menu-card-body{justify-content:center;padding:16px;min-width:0;}
+    .menu-card.is-seule h3{font-size:1.35rem;}
+    .menu-card.is-seule .qty-note{margin-top:14px;}
+  }
+  @media(min-width:600px) and (max-width:979px){
+    .menu-card.is-seule .img-wrap{flex-basis:40%;aspect-ratio:5/4;}
+    .menu-card.is-seule .menu-card-body{padding:22px 28px;}
+    .menu-card.is-seule h3{font-size:1.6rem;}
+  }
+
   /* ================= L'ARRIVÉE D'UNE VISITE FROIDE — 24/10/2026 =================
      Samer, « on veut faire de 1 à 5 », après la mesure à 390 px : le coffret à
      490 QR d'abord, le premier produit à 190 QR après deux écrans, la livraison
@@ -2206,6 +2239,19 @@
           "offers": {
             "@type": "Offer",
             "price": "190",
+            "priceCurrency": "QAR",
+            "availability": "https://schema.org/InStock"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Upside-Down Banana Cake",
+          "alternateName": "كيكة الموز المقلوبة",
+          "description": "Caramelized banana cake, baked to order.",
+          "image": "https://petit-gateau.com/img/upside-down-banana-cake-doha.webp",
+          "offers": {
+            "@type": "Offer",
+            "price": "310",
             "priceCurrency": "QAR",
             "availability": "https://schema.org/InStock"
           }
@@ -2529,7 +2575,7 @@
     <div class="menu-grid">
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/madeleine-box-doha.webp" srcset="/img/madeleine-box-doha-480.webp 480w, /img/madeleine-box-doha-600.webp 600w, /img/madeleine-box-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Home-baked madeleines from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
+          <img src="/img/madeleine-box-doha.webp" srcset="/img/madeleine-box-doha-480.webp 480w, /img/madeleine-box-doha-600.webp 600w, /img/madeleine-box-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Home-baked madeleines from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
         </div>
         <div class="menu-card-body">
           <h3 data-i18n="item1_name">مادلين</h3>
@@ -2546,7 +2592,7 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/petit-madeleine-doha.webp" srcset="/img/petit-madeleine-doha-480.webp 480w, /img/petit-madeleine-doha-600.webp 600w, /img/petit-madeleine-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Bite-size petit madeleines beside a full-size one, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
+          <img src="/img/petit-madeleine-doha.webp" srcset="/img/petit-madeleine-doha-480.webp 480w, /img/petit-madeleine-doha-600.webp 600w, /img/petit-madeleine-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Bite-size petit madeleines beside a full-size one, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
           <svg class="stk stk-heart stk-card" aria-hidden="true" focusable="false"><use href="#stk-heart"/></svg>
         </div>
         <div class="menu-card-body">
@@ -2565,7 +2611,7 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/brown-butter-banana-bread-doha.webp" srcset="/img/brown-butter-banana-bread-doha-480.webp 480w, /img/brown-butter-banana-bread-doha-600.webp 600w, /img/brown-butter-banana-bread-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Brown butter banana bread, homemade in Doha" width="800" height="1000" decoding="async" loading="lazy">
+          <img src="/img/brown-butter-banana-bread-doha.webp" srcset="/img/brown-butter-banana-bread-doha-480.webp 480w, /img/brown-butter-banana-bread-doha-600.webp 600w, /img/brown-butter-banana-bread-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Brown butter banana bread, homemade in Doha" width="800" height="1000" decoding="async" loading="lazy">
           <svg class="stk stk-heart stk-card" aria-hidden="true" focusable="false"><use href="#stk-heart"/></svg>
         </div>
         <div class="menu-card-body">
@@ -2584,7 +2630,7 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/upside-down-peach-cake-doha.webp" srcset="/img/upside-down-peach-cake-doha-480.webp 480w, /img/upside-down-peach-cake-doha-600.webp 600w, /img/upside-down-peach-cake-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Upside-down peach cake baked to order in Doha" width="800" height="901" decoding="async" loading="lazy">
+          <img src="/img/upside-down-peach-cake-doha.webp" srcset="/img/upside-down-peach-cake-doha-480.webp 480w, /img/upside-down-peach-cake-doha-600.webp 600w, /img/upside-down-peach-cake-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Upside-down peach cake baked to order in Doha" width="800" height="901" decoding="async" loading="lazy">
           <svg class="stk stk-sparkle stk-card" aria-hidden="true" focusable="false"><use href="#stk-sparkle"/></svg>
         </div>
         <div class="menu-card-body">
@@ -2603,7 +2649,7 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/chocolate-chip-cookies-doha.webp" srcset="/img/chocolate-chip-cookies-doha-480.webp 480w, /img/chocolate-chip-cookies-doha-600.webp 600w, /img/chocolate-chip-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Homemade chocolate chip cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
+          <img src="/img/chocolate-chip-cookies-doha.webp" srcset="/img/chocolate-chip-cookies-doha-480.webp 480w, /img/chocolate-chip-cookies-doha-600.webp 600w, /img/chocolate-chip-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Homemade chocolate chip cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
         </div>
         <div class="menu-card-body">
           <h3 data-i18n="item5_name">كوكيز رقائق الشوكولاتة</h3>
@@ -2620,7 +2666,7 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/rusk-shabora-doha.webp" srcset="/img/rusk-shabora-doha-480.webp 480w, /img/rusk-shabora-doha-600.webp 600w, /img/rusk-shabora-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Rusk Shabora, twice-baked homemade biscuits in Doha" width="800" height="975" decoding="async" loading="lazy">
+          <img src="/img/rusk-shabora-doha.webp" srcset="/img/rusk-shabora-doha-480.webp 480w, /img/rusk-shabora-doha-600.webp 600w, /img/rusk-shabora-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Rusk Shabora, twice-baked homemade biscuits in Doha" width="800" height="975" decoding="async" loading="lazy">
         </div>
         <div class="menu-card-body">
           <h3 data-i18n="item6_name">رسك "شبورة"</h3>
@@ -2638,7 +2684,7 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/nutella-cookies-doha.webp" srcset="/img/nutella-cookies-doha-480.webp 480w, /img/nutella-cookies-doha-600.webp 600w, /img/nutella-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Nutella-filled cookies, home-baked in Doha, Qatar" width="800" height="1000" decoding="async" loading="lazy">
+          <img src="/img/nutella-cookies-doha.webp" srcset="/img/nutella-cookies-doha-480.webp 480w, /img/nutella-cookies-doha-600.webp 600w, /img/nutella-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Nutella-filled cookies, home-baked in Doha, Qatar" width="800" height="1000" decoding="async" loading="lazy">
           <svg class="stk stk-heart stk-card" aria-hidden="true" focusable="false"><use href="#stk-heart"/></svg>
         </div>
         <div class="menu-card-body">
@@ -2657,7 +2703,7 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/chamaral-chocolate-chunk-doha.webp" srcset="/img/chamaral-chocolate-chunk-doha-480.webp 480w, /img/chamaral-chocolate-chunk-doha-600.webp 600w, /img/chamaral-chocolate-chunk-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Homemade milk chocolate chunk cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
+          <img src="/img/chamaral-chocolate-chunk-doha.webp" srcset="/img/chamaral-chocolate-chunk-doha-480.webp 480w, /img/chamaral-chocolate-chunk-doha-600.webp 600w, /img/chamaral-chocolate-chunk-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Homemade milk chocolate chunk cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
           <svg class="stk stk-sparkle stk-card" aria-hidden="true" focusable="false"><use href="#stk-sparkle"/></svg>
         </div>
         <div class="menu-card-body">
@@ -2673,10 +2719,9 @@
           <span class="qty-price" dir="ltr">200 QR</span></div>
         </div>
       </div>
-      <div class="menu-card is-new">
+      <div class="menu-card is-seule">
         <div class="img-wrap">
-          <p class="new-badge">جديد</p>
-          <img src="/img/petit-cookies-doha.webp" srcset="/img/petit-cookies-doha-480.webp 480w, /img/petit-cookies-doha-600.webp 600w, /img/petit-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 250px" alt="Bite-size petit cookies with milk chocolate, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
+          <img src="/img/petit-cookies-doha.webp" srcset="/img/petit-cookies-doha-480.webp 480w, /img/petit-cookies-doha-600.webp 600w, /img/petit-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Bite-size petit cookies with milk chocolate, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
         </div>
         <div class="menu-card-body">
           <h3 data-i18n="item9_name">كوكيز صغيرة</h3>
@@ -2689,6 +2734,24 @@
             <span class="qty-val">0</span>
             <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
           <span class="qty-price" dir="ltr">190 QR</span></div>
+        </div>
+      </div>
+      <div class="menu-card is-new">
+        <div class="img-wrap">
+          <p class="new-badge">جديد</p>
+          <img src="/img/upside-down-banana-cake-doha.webp" srcset="/img/upside-down-banana-cake-doha-480.webp 480w, /img/upside-down-banana-cake-doha-600.webp 600w, /img/upside-down-banana-cake-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Upside-down banana cake with caramelized bananas, baked to order in Doha" width="800" height="1000" decoding="async" loading="lazy">
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item10_name">كيكة الموز المقلوبة</h3>
+          <p class="desc" data-i18n="item10_desc">موز مكرمل، يُخبز حسب الطلب</p>
+          <p class="allergens" data-allergens="item10" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">كيكة واحدة</span><span class="qty-note-p" dir="ltr">310 QR</span></p>
+        <div class="qty-row" data-item="item10" data-price="310">
+          <button type="button" class="qty-add" data-add="item10"><span>أضف</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">310 QR</span></div>
         </div>
       </div>
     </div>
@@ -3065,6 +3128,7 @@
       item7_qty:"9 pieces",
       item8_qty:"12 pieces",
       item9_qty:"60 pieces",
+      item10_qty:"1 cake",
       spread_qty:"1 upside-down peach cake · 12 cookies · 40 petit madeleines",
       majlis4_qty:"12 madeleines · 12 cookies · 1 upside-down peach cake",
       majlis6_qty:"12 cookies · 12 cookies · 1 upside-down peach cake · 12 madeleines",
@@ -3094,6 +3158,7 @@
       item7_name:"Nutella Cookies", item7_desc:"Soft-baked with a molten Nutella centre · 9 pieces",
       item8_name:"Choco Chunk", item8_desc:"Thick milk chocolate chunks, crackled tops · dozen",
       item9_name:"Petit Cookies", item9_desc:"Bite-size · 60 pieces",
+      item10_name:"Upside-Down Banana Cake", item10_desc:"Caramelized banana, baked to order",
       order_send:"Send Order via WhatsApp",
       order_greeting:"Hi! I'd like to order:", order_total:"Total",
       spread_label:"Taste Everything", spread_title:"The Discovery Box",
@@ -3182,6 +3247,7 @@
       item7_qty:"9 حبات",
       item8_qty:"12 حبة",
       item9_qty:"60 قطعة",
+      item10_qty:"كيكة واحدة",
       spread_qty:"1 كيكة خوخ مقلوبة · 12 كوكيز · 40 مادلين صغيرة",
       majlis4_qty:"12 مادلين · 12 كوكيز · 1 كيكة خوخ مقلوبة",
       majlis6_qty:"12 كوكيز · 12 كوكيز · 1 كيكة خوخ مقلوبة · 12 مادلين",
@@ -3293,6 +3359,7 @@
       item7_qty:"9 حبات",
       item8_qty:"12 حبة",
       item9_qty:"60 قطعة",
+      item10_qty:"كيكة واحدة",
       spread_qty:"1 كيكة خوخ مقلوبة · 12 كوكيز · 40 مادلين صغيرة",
       majlis4_qty:"12 مادلين · 12 كوكيز · 1 كيكة خوخ مقلوبة",
       majlis6_qty:"12 كوكيز · 12 كوكيز · 1 كيكة خوخ مقلوبة · 12 مادلين",
@@ -3322,6 +3389,7 @@
       item7_name:"كوكيز نوتيلا", item7_desc:"طري، بقلب نوتيلا ذائب · 9 حبات",
       item8_name:"كوكيز بقطع الشوكولاتة", item8_desc:"قطع كبيرة من شوكولاتة الحليب، بسطح متشقّق · 12 حبة",
       item9_name:"كوكيز صغيرة", item9_desc:"بحجم اللقمة · 60 قطعة",
+      item10_name:"كيكة الموز المقلوبة", item10_desc:"موز مكرمل، يُخبز حسب الطلب",
       order_send:"إرسال الطلب عبر واتساب",
       order_greeting:"مرحبًا! أرغب بطلب:", order_total:"المجموع",
       spread_label:"تذوّق كل شيء", spread_title:"صندوق الاكتشاف",
@@ -5382,6 +5450,19 @@
         var q = c.querySelector('.qty-row');
         return q && q.getAttribute('data-item');
       }, produits);
+      marquerLaSeule();
+    }
+
+    // La fiche SEULE (29/10/2026, choix « B » de Samer) : la page écrite la
+    // marque dans SON ordre (build2.py § 13 bis) ; dès que l'app réordonne le
+    // menu, la dernière n'est plus la même, et la marque la suit. Le bandeau
+    // « New » n'en fait pas partie : il se place en tête quel que soit l'ordre.
+    // Le CSS n'en fait un bandeau que sous 980 px (bloc « LA FICHE SEULE »).
+    function marquerLaSeule(){
+      var cartes = [].slice.call(document.querySelectorAll('.menu-grid .menu-card'))
+        .filter(function(c){ return !c.classList.contains('is-new'); });
+      cartes.forEach(function(c){ c.classList.remove('is-seule'); });
+      if(cartes.length % 2) cartes[cartes.length - 1].classList.add('is-seule');
     }
 
     // Le carnet ne dit que des « non » : telle date est prise, tel produit
