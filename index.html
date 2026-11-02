@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261102-0257">
+<meta name="pg-build" content="20261102-0327">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -384,6 +384,8 @@
     font-family:var(--police);font-size:0.85rem;font-weight:700;color:var(--vert);text-decoration:underline;text-underline-offset:3px;}
   .hero-box-head .qty-row.has-qty + .box-change{display:inline-block;}
   .box-sub{margin:0 0 6px;font-family:var(--police);font-size:0.9rem;color:var(--maroon);}
+  .box-inclus{margin:10px 0 6px;font-family:var(--police);font-size:0.9rem;line-height:1.45;color:var(--deep-maroon);}
+  .box-inclus b{display:block;font-size:0.78rem;font-weight:700;color:var(--vert);margin-bottom:2px;}
   .box-fld{padding:12px 0;border-top:1px solid rgba(94,22,34,0.12);}
   .box-fld:first-child{border-top:none;}
   .box-fld .fld-label{display:flex;justify-content:space-between;align-items:baseline;}
@@ -2380,7 +2382,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="spread_desc">Can't choose? Neither can we. Everything we bake best, in one box — enough to share, and to find your favourite.</p>
           <p class="allergens" data-allergens="spread" hidden></p>
-          <p class="box-resume"><b>You choose what goes in</b><span data-resume="spread"></span></p>
+          <p class="box-resume"><b>What’s in the box</b><span data-resume="spread"></span></p>
           <div class="spread-inside">
             <span class="fld-label">What’s in the box</span>
             <ul class="offre-contenu" data-offre="spread">
@@ -2420,7 +2422,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">Built for when guests are coming — cookies, madeleines and a cake, sized to your table.</p>
           <p class="allergens" data-allergens="majlis4" hidden></p>
-          <p class="box-resume"><b>You choose what goes in</b><span data-resume="majlis4"></span></p>
+          <p class="box-resume"><b>What’s in the box</b><span data-resume="majlis4"></span></p>
           <div class="spread-inside">
             <span class="fld-label">What’s in the box</span>
             <ul class="offre-contenu" data-offre="majlis4">
@@ -2467,7 +2469,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">Built for when guests are coming — cookies, madeleines and a cake, sized to your table.</p>
           <p class="allergens" data-allergens="majlis6" hidden></p>
-          <p class="box-resume"><b>You choose what goes in</b><span data-resume="majlis6"></span></p>
+          <p class="box-resume"><b>What’s in the box</b><span data-resume="majlis6"></span></p>
           <div class="spread-inside">
             <span class="fld-label">What’s in the box</span>
             <ul class="offre-contenu" data-offre="majlis6">
@@ -2516,7 +2518,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">Built for when guests are coming — cookies, madeleines and a cake, sized to your table.</p>
           <p class="allergens" data-allergens="majlis10" hidden></p>
-          <p class="box-resume"><b>You choose what goes in</b><span data-resume="majlis10"></span></p>
+          <p class="box-resume"><b>What’s in the box</b><span data-resume="majlis10"></span></p>
           <div class="spread-inside">
             <span class="fld-label">What’s in the box</span>
             <ul class="offre-contenu" data-offre="majlis10">
@@ -3106,6 +3108,7 @@
   </div>
   <div class="sheet-body">
     <p class="box-sub" id="boxSub"></p>
+    <p class="box-inclus" id="boxIncl" hidden><b>Included</b><span></span></p>
     <div id="boxRows"></div>
   </div>
   <div class="sheet-foot">
@@ -3285,7 +3288,7 @@
       hero_proof2:"Registered home bakery · Doha",
       hero_box_add:"Add the box",
       box_choose_add:"Choose & add",
-      box_you_choose:"You choose what goes in",
+      box_included:"Included",
       box_count:"%s of %s",
       box_left:"Choose %s more",
       box_add:"Add the box · %s",
@@ -3713,6 +3716,12 @@
     var serves = carte.querySelector('.spread-price em');
     $('boxTitle').textContent = carte.querySelector('h2').textContent;
     $('boxSub').textContent = PRICES[id] + ' ' + T('qr') + (serves && serves.textContent ? ' · ' + serves.textContent : '');
+    // Ce qui ne se choisit pas : lu dans la liste de la carte, qui suit le catalogue.
+    var fixes = [].map.call(carte.querySelectorAll('.offre-contenu li[data-cle]:not([data-slot])'), function(li){
+      return li.querySelector('b').textContent.trim() + ' ' + li.querySelector('span').textContent.trim();
+    }).join(' · ');
+    $('boxIncl').hidden = !fixes;
+    $('boxIncl').querySelector('span').textContent = fixes;
     peindreBox();
     $('boxSheet').classList.add('open'); $('boxVeil').classList.add('open');
     document.body.classList.add('sheet-open');

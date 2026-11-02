@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261102-0257">
+<meta name="pg-build" content="20261102-0327">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -384,6 +384,8 @@
     font-family:var(--police);font-size:0.85rem;font-weight:700;color:var(--vert);text-decoration:underline;text-underline-offset:3px;}
   .hero-box-head .qty-row.has-qty + .box-change{display:inline-block;}
   .box-sub{margin:0 0 6px;font-family:var(--police);font-size:0.9rem;color:var(--maroon);}
+  .box-inclus{margin:10px 0 6px;font-family:var(--police);font-size:0.9rem;line-height:1.45;color:var(--deep-maroon);}
+  .box-inclus b{display:block;font-size:0.78rem;font-weight:700;color:var(--vert);margin-bottom:2px;}
   .box-fld{padding:12px 0;border-top:1px solid rgba(94,22,34,0.12);}
   .box-fld:first-child{border-top:none;}
   .box-fld .fld-label{display:flex;justify-content:space-between;align-items:baseline;}
@@ -2381,7 +2383,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="spread_desc">لا تستطيع الاختيار؟ نحن أيضًا. أفضل ما نخبزه في صندوق واحد — يكفي للمشاركة، ولاكتشاف ما تفضّله.</p>
           <p class="allergens" data-allergens="spread" hidden></p>
-          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="spread"></span></p>
+          <p class="box-resume"><b>ما في الصندوق</b><span data-resume="spread"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="spread">
@@ -2421,7 +2423,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">مُعدّ لاستقبال الضيوف — كوكيز، مادلين وكيكة، بالحجم الذي يناسب طاولتك.</p>
           <p class="allergens" data-allergens="majlis4" hidden></p>
-          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="majlis4"></span></p>
+          <p class="box-resume"><b>ما في الصندوق</b><span data-resume="majlis4"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="majlis4">
@@ -2468,7 +2470,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">مُعدّ لاستقبال الضيوف — كوكيز، مادلين وكيكة، بالحجم الذي يناسب طاولتك.</p>
           <p class="allergens" data-allergens="majlis6" hidden></p>
-          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="majlis6"></span></p>
+          <p class="box-resume"><b>ما في الصندوق</b><span data-resume="majlis6"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="majlis6">
@@ -2517,7 +2519,7 @@
         <div class="hero-box-details">
           <p class="hero-box-desc" data-i18n="majlis_desc">مُعدّ لاستقبال الضيوف — كوكيز، مادلين وكيكة، بالحجم الذي يناسب طاولتك.</p>
           <p class="allergens" data-allergens="majlis10" hidden></p>
-          <p class="box-resume"><b>أنت تختار ما بداخله</b><span data-resume="majlis10"></span></p>
+          <p class="box-resume"><b>ما في الصندوق</b><span data-resume="majlis10"></span></p>
           <div class="spread-inside">
             <span class="fld-label">ما في الصندوق</span>
             <ul class="offre-contenu" data-offre="majlis10">
@@ -3107,6 +3109,7 @@
   </div>
   <div class="sheet-body">
     <p class="box-sub" id="boxSub"></p>
+    <p class="box-inclus" id="boxIncl" hidden><b>مشمول</b><span></span></p>
     <div id="boxRows"></div>
   </div>
   <div class="sheet-foot">
@@ -3286,7 +3289,7 @@
       hero_proof2:"مخبز منزلي مسجّل · الدوحة",
       hero_box_add:"أضف الصندوق",
       box_choose_add:"اختر وأضف",
-      box_you_choose:"أنت تختار ما بداخله",
+      box_included:"مشمول",
       box_count:"%s من %s",
       box_left:"بقي %s للاختيار",
       box_add:"أضف الصندوق · %s",
@@ -3714,6 +3717,12 @@
     var serves = carte.querySelector('.spread-price em');
     $('boxTitle').textContent = carte.querySelector('h2').textContent;
     $('boxSub').textContent = PRICES[id] + ' ' + T('qr') + (serves && serves.textContent ? ' · ' + serves.textContent : '');
+    // Ce qui ne se choisit pas : lu dans la liste de la carte, qui suit le catalogue.
+    var fixes = [].map.call(carte.querySelectorAll('.offre-contenu li[data-cle]:not([data-slot])'), function(li){
+      return li.querySelector('b').textContent.trim() + ' ' + li.querySelector('span').textContent.trim();
+    }).join(' · ');
+    $('boxIncl').hidden = !fixes;
+    $('boxIncl').querySelector('span').textContent = fixes;
     peindreBox();
     $('boxSheet').classList.add('open'); $('boxVeil').classList.add('open');
     document.body.classList.add('sheet-open');
