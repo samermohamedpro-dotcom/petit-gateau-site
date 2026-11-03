@@ -30,6 +30,7 @@ main{max-width:420px}
 h1{font:700 30px/1.18 Fraunces,Georgia,serif;letter-spacing:-.005em;margin:0 0 12px}
 p{margin:0 0 20px}
 a.action{display:inline-block;min-height:48px;padding:12px 28px;border-radius:999px;background:#2E5A3E;color:#fff;font-weight:700;text-decoration:none}
+a.action[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -56,6 +57,8 @@ a.action{display:inline-block;min-height:48px;padding:12px 28px;border-radius:99
     if(bouton){ a.textContent = bouton; if(cible) a.href = cible; }
   }
   var INVALIDE = ['This link is no longer valid', 'Message us and we’ll sort it out.', 'Message us on WhatsApp'];
+  // Seulement quand la fonction a dit « payé » : ce message affirme un paiement.
+  var DIRE_PAYE = document.getElementById('action').href + '?text=' + encodeURIComponent('Hi! I’ve just paid for my order by card. Thank you!');
   if(!m){ dire.apply(null, INVALIDE); return; }
   var payer = FONCTION + '?c=' + m[1];
   if(!retour){ location.replace(payer); return; }
@@ -64,10 +67,10 @@ a.action{display:inline-block;min-height:48px;padding:12px 28px;border-radius:99
     return;
   }
   fetch(payer + '&etat=1', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(p){
-    if(p.statut === 'payee') dire('Thank you', 'Your payment is received. We’ll see you with your order.');
+    if(p.statut === 'payee') dire('Thank you', 'Your payment is received. We’ll see you with your order.', 'Message us on WhatsApp', DIRE_PAYE);
     else if(p.statut === 'en-cours') dire('Almost there', 'Your payment is still being confirmed. If you completed it, there’s nothing more to do.', 'Back to payment', location.pathname + '?c=' + m[1]);
     else if(p.statut === 'a-payer' || p.statut === 'echouee' || p.statut === 'rejetee') dire('Payment not completed', 'Nothing was charged. You can try again.', 'Try again', location.pathname + '?c=' + m[1]);
-    else if(p.statut === 'ecart') dire('Thank you', 'We received your payment and will check it with you on WhatsApp.', 'Message us on WhatsApp');
+    else if(p.statut === 'ecart') dire('Thank you', 'We received your payment and will check it with you on WhatsApp.', 'Message us on WhatsApp', DIRE_PAYE);
     else dire.apply(null, INVALIDE);
   }).catch(function(){
     dire('We couldn’t check your payment', 'If you completed it, it’s safe: we’ll confirm on WhatsApp.', 'Message us on WhatsApp');
