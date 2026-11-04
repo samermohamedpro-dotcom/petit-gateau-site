@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261103-1611">
+<meta name="pg-build" content="20261104-0229">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -955,6 +955,9 @@
     color:var(--dusty-rose);line-height:1.4;font-style:italic;
   }
   [dir="rtl"] .fld-help{font-style:normal;}
+  /* « One delivery for everything » (04/11/2026) : une phrase qui vend, pas une
+     aide — lisible comme le texte de la feuille, pas en petite italique. */
+  .one-deliv{margin:14px 0 0;font-family:var(--police);font-size:0.85rem;line-height:1.4;color:var(--maroon);}
 
   /* ================= REPLI ORDINATEUR ================= */
   .fallback{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(40,10,16,0.6);}
@@ -2097,13 +2100,21 @@
     {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": [
-        "Saturday",
-        "Sunday",
         "Monday",
         "Tuesday",
         "Wednesday",
-        "Thursday"
-      ]
+        "Thursday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "12:00",
+      "closes": "20:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Friday",
+      "opens": "15:00",
+      "closes": "20:00"
     }
   ],
   "potentialAction": {
@@ -2315,8 +2326,6 @@
   }
 }
 </script>
-<style id="pg-horaires-css">html:not(.hr-ap) [data-hr="ap"],html.hr-ap [data-hr="av"]{display:none!important}</style>
-<script id="pg-horaires-js">(function(){var d=new Date(Date.now()+3*3600000).toISOString().slice(0,10);if(d<"2026-10-28")return;document.documentElement.classList.add("hr-ap");document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll('script[type="application/ld+json"]').forEach(function(s){try{var o=JSON.parse(s.textContent);if(o&&o.openingHoursSpecification){o.openingHoursSpecification=[{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"], "opens": "12:00", "closes": "20:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "15:00", "closes": "20:00"}];s.textContent=JSON.stringify(o);}}catch(e){}});});})();</script>
 </head>
 <body>
 <svg class="stk-sheet" width="0" height="0" aria-hidden="true" focusable="false"><symbol id="stk-cookie" viewBox="0 0 64 64"><path d="M32 8a24 24 0 1 0 0 48a24 24 0 1 0 0-48Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 8a24 24 0 1 0 0 48a24 24 0 1 0 0-48Z" fill="#E3B172" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="23" cy="25" r="3.3" fill="currentColor"/><circle cx="37" cy="21" r="3.3" fill="currentColor"/><circle cx="43" cy="36" r="3.3" fill="currentColor"/><circle cx="28" cy="41" r="3.3" fill="currentColor"/><circle cx="35" cy="32" r="3.3" fill="currentColor"/><circle cx="20" cy="35" r="3.3" fill="currentColor"/></symbol><symbol id="stk-madeleine" viewBox="0 0 64 64"><path d="M32 9C46 9 55 21 55 36C55 47 44 56 32 56C20 56 9 47 9 36C9 21 18 9 32 9Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 9C46 9 55 21 55 36C55 47 44 56 32 56C20 56 9 47 9 36C9 21 18 9 32 9Z" fill="#F0C57A" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 51L19 22M32 51L32 15M32 51L45 22M32 51L13 33M32 51L51 33" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity=".75"/></symbol><symbol id="stk-heart" viewBox="0 0 64 64"><path d="M32 55C29 52 11 40 11 26a11 11 0 0 1 21-4a11 11 0 0 1 21 4c0 14-18 26-21 29Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 55C29 52 11 40 11 26a11 11 0 0 1 21-4a11 11 0 0 1 21 4c0 14-18 26-21 29Z" fill="#E4634A" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="stk-sparkle" viewBox="0 0 64 64"><path d="M32 5C34 22 42 30 59 32C42 34 34 42 32 59C30 42 22 34 5 32C22 30 30 22 32 5Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 5C34 22 42 30 59 32C42 34 34 42 32 59C30 42 22 34 5 32C22 30 30 22 32 5Z" fill="#E3B172" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="stk-cake" viewBox="0 0 64 64"><path d="M7 44L32 9L57 44C57 44 45 52 32 52C19 52 7 44 7 44Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M7 44L32 9L57 44C57 44 45 52 32 52C19 52 7 44 7 44Z" fill="#FBEFE3" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M17 40L32 21L47 40" fill="none" stroke="#E4634A" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="11" r="5" fill="#E4634A" stroke="currentColor" stroke-width="2.4"/></symbol><symbol id="stk-burst" viewBox="0 0 64 64"><path d="M32.0 4.0L37.4 11.7L46.0 7.8L46.8 17.2L56.2 18.0L52.3 26.6L60.0 32.0L52.3 37.4L56.2 46.0L46.8 46.8L46.0 56.2L37.4 52.3L32.0 60.0L26.6 52.3L18.0 56.2L17.2 46.8L7.8 46.0L11.7 37.4L4.0 32.0L11.7 26.6L7.8 18.0L17.2 17.2L18.0 7.8L26.6 11.7Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32.0 4.0L37.4 11.7L46.0 7.8L46.8 17.2L56.2 18.0L52.3 26.6L60.0 32.0L52.3 37.4L56.2 46.0L46.8 46.8L46.0 56.2L37.4 52.3L32.0 60.0L26.6 52.3L18.0 56.2L17.2 46.8L7.8 46.0L11.7 37.4L4.0 32.0L11.7 26.6L7.8 18.0L17.2 17.2L18.0 7.8L26.6 11.7Z" fill="#E4634A" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="stk-coeuror" viewBox="0 0 64 64"><path d="M32 55C29 52 11 40 11 26a11 11 0 0 1 21-4a11 11 0 0 1 21 4c0 14-18 26-21 29Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 55C29 52 11 40 11 26a11 11 0 0 1 21-4a11 11 0 0 1 21 4c0 14-18 26-21 29Z" fill="#E3B172" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="stk-appetit" viewBox="0 0 64 64"><path d="M32 4a28 28 0 1 0 0 56a28 28 0 1 0 0-56Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 4a28 28 0 1 0 0 56a28 28 0 1 0 0-56Z" fill="#E3B172" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="32" r="23.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="1.5 2.5" stroke-linecap="round"/><text x="32" y="29" text-anchor="middle" font-family="Figtree" font-weight="800" font-size="11" fill="currentColor">Bon</text><text x="32" y="43" text-anchor="middle" font-family="Figtree" font-weight="900" font-size="12.5" letter-spacing="-0.3" fill="currentColor">appétit</text></symbol><symbol id="stk-merci" viewBox="0 0 64 64"><path d="M32 4a28 28 0 1 0 0 56a28 28 0 1 0 0-56Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 4a28 28 0 1 0 0 56a28 28 0 1 0 0-56Z" fill="#E4634A" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="32" r="23.6" fill="none" stroke="#FAF6EC" stroke-width="1.3" stroke-dasharray="1.5 2.5" stroke-linecap="round"/><text x="32" y="38" text-anchor="middle" font-family="Figtree" font-weight="900" font-size="16" letter-spacing="-0.4" fill="#FAF6EC">Merci</text></symbol><symbol id="stk-sceau" viewBox="0 0 64 64"><path d="M32 4a28 28 0 1 0 0 56a28 28 0 1 0 0-56Z" fill="#FAF6EC" stroke="#FAF6EC" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 4a28 28 0 1 0 0 56a28 28 0 1 0 0-56Z" fill="#E3B172" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="32" r="23.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="1.5 2.5" stroke-linecap="round"/><text x="32" y="25" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="6.4" fill="currentColor">made in</text><text x="32" y="40.5" text-anchor="middle" font-family="Figtree" font-weight="900" font-size="14" letter-spacing="-0.4" fill="currentColor">Qatar</text><text x="32" y="49.5" text-anchor="middle" font-family="Figtree" font-weight="700" font-size="5.4" fill="currentColor">Doha</text></symbol></svg>
@@ -2345,7 +2354,7 @@
     <div class="hero-content">
       <p class="hero-eyebrow">Made in Qatar · Doha <svg class="stk stk-sceau stk-inline stk-inline-sceau" aria-hidden="true" focusable="false"><use href="#stk-sceau"/></svg></p>
       <h1>From a Qatari home kitchen, today.</h1>
-      <p class="hero-sub">Madeleines, cookies and cakes, baked to order. Order before <span data-hr="av">5 PM</span><span data-hr="ap">8 PM</span> for today.</p>
+      <p class="hero-sub">Madeleines, cookies and cakes, baked to order. Order before 8 PM for today.</p>
       <ul class="hero-proof"><li>Baked to order</li><li>Registered home bakery · Doha</li></ul>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#menu">Choose your treats</a>
@@ -2353,10 +2362,10 @@
       <svg class="stk stk-cookie stk-hero" aria-hidden="true" focusable="false"><use href="#stk-cookie"/></svg>
     </div>
     <div class="hero-aside">
-      <div class="hero-start" data-start-item="item1" data-voulu="item1" data-candidats="[{&quot;id&quot;: &quot;item1&quot;, &quot;p&quot;: 2, &quot;nom&quot;: &quot;Madeleine&quot;, &quot;pieces&quot;: &quot;12 pieces&quot;, &quot;prix&quot;: &quot;190 QR&quot;, &quot;photo&quot;: &quot;madeleine-box-doha&quot;}, {&quot;id&quot;: &quot;item2&quot;, &quot;p&quot;: 2, &quot;nom&quot;: &quot;Petit Madeleine&quot;, &quot;pieces&quot;: &quot;40 pieces&quot;, &quot;prix&quot;: &quot;190 QR&quot;, &quot;photo&quot;: &quot;petit-madeleine-doha&quot;}, {&quot;id&quot;: &quot;item8&quot;, &quot;p&quot;: 1, &quot;nom&quot;: &quot;Choco Chunk&quot;, &quot;pieces&quot;: &quot;12 pieces&quot;, &quot;prix&quot;: &quot;200 QR&quot;, &quot;photo&quot;: &quot;chamaral-chocolate-chunk-doha&quot;}, {&quot;id&quot;: &quot;item4&quot;, &quot;p&quot;: 1, &quot;nom&quot;: &quot;Upside-Down Peach Cake&quot;, &quot;pieces&quot;: &quot;1 cake&quot;, &quot;prix&quot;: &quot;290 QR&quot;, &quot;photo&quot;: &quot;upside-down-peach-cake-doha&quot;}]">
-        <img class="hero-start-img" src="/img/madeleine-box-doha-192.webp" alt="" width="192" height="240" decoding="async" fetchpriority="low">
-        <div class="hero-start-text"><span class="hero-start-name">Madeleine</span><span class="hero-start-meta">12 pieces</span></div>
-        <span class="hero-start-price" dir="ltr">190 QR</span>
+      <div class="hero-start" data-start-item="item8" data-voulu="item8" data-candidats="[{&quot;id&quot;: &quot;item8&quot;, &quot;p&quot;: 1, &quot;nom&quot;: &quot;Choco Chunk&quot;, &quot;pieces&quot;: &quot;12 pieces&quot;, &quot;prix&quot;: &quot;200 QR&quot;, &quot;photo&quot;: &quot;chamaral-chocolate-chunk-doha&quot;}]">
+        <img class="hero-start-img" src="/img/chamaral-chocolate-chunk-doha-192.webp" alt="" width="192" height="240" decoding="async" fetchpriority="low">
+        <div class="hero-start-text"><span class="hero-start-name">Choco Chunk</span><span class="hero-start-meta">12 pieces</span></div>
+        <span class="hero-start-price" dir="ltr">200 QR</span>
         <button type="button" class="hero-start-add"><span>Add</span><span class="hero-start-n" hidden></span></button>
       </div>
       <script>(function(){var e=document.querySelector(".hero-start");if(!e)return;try{var L=JSON.parse(e.getAttribute("data-candidats")),t=0,r,i,c;L.forEach(function(k){t+=k.p});r=Math.random()*t;c=L[0];for(i=0;i<L.length;i++){if(r<L[i].p){c=L[i];break}r-=L[i].p}e.setAttribute("data-voulu",c.id);e.setAttribute("data-start-item",c.id);e.querySelector(".hero-start-name").innerHTML=c.nom;e.querySelector(".hero-start-meta").innerHTML=c.pieces;e.querySelector(".hero-start-price").innerHTML=c.prix;e.querySelector("img").setAttribute("src","/img/"+c.photo+"-192.webp")}catch(x){}})();</script>
@@ -2582,9 +2591,9 @@
 <section class="menu" id="menu">
   <div class="container">
     <div class="menu-head">
-      <span class="label" data-i18n="menu_label"><span data-hr="av">Baked Fresh, Saturday–Thursday</span><span data-hr="ap">Baked Fresh, Every Day</span></span>
+      <span class="label" data-i18n="menu_label">Baked Fresh, Every Day</span>
       <h2 data-i18n="menu_title">Menu</h2>
-      <p class="menu-note stk-pill">Same-day delivery available · order before <span data-hr="av">5 PM</span><span data-hr="ap">8 PM</span></p>
+      <p class="menu-note stk-pill">Same-day delivery available · order before 8 PM</p>
     
       <p class="scarce" id="scarce" hidden></p>
     </div>
@@ -2791,7 +2800,7 @@
     <span class="label" data-i18n="proof_label">Why they come back</span>
     <ul class="proof-facts">
       <li data-i18n="proof_fact1">Baked to order</li>
-      <li data-i18n="proof_fact2">Same-day orders until <span data-hr="av">5 pm</span><span data-hr="ap">8 pm</span></li>
+      <li data-i18n="proof_fact2">Same-day orders until 8 pm</li>
       <li data-i18n="proof_fact3">Registered Qatari home bakery · Doha · License 339339</li>
       <li class="proof-qatar" data-i18n="proof_fact4">Made in Qatar</li>
     </ul>
@@ -2856,10 +2865,8 @@
     </div>
     <div class="info-card">
       <div class="info-row"><span data-i18n="info_location">Location</span><span data-i18n="info_location_val">Home kitchen, Doha, Qatar</span></div>
-      <div class="info-row" data-hr="av"><span data-i18n="info_days">Baking Days</span><span data-i18n="info_days_val">Saturday – Thursday</span></div>
-      <div class="info-row" data-hr="av"><span data-i18n="info_closed">Closed</span><span data-i18n="info_closed_val">Friday</span></div>
-      <div class="info-row" data-hr="ap"><span>Open daily</span><span>12 PM – 8 PM</span></div>
-      <div class="info-row" data-hr="ap"><span>Friday</span><span>3 PM – 8 PM</span></div>
+      <div class="info-row"><span>Open daily</span><span>12 PM – 8 PM</span></div>
+      <div class="info-row"><span>Friday</span><span>3 PM – 8 PM</span></div>
       <div class="info-row"><span data-i18n="info_orders">Orders</span><span data-i18n="info_orders_val">Via WhatsApp only</span></div>
       <div class="info-row"><span data-i18n="info_wa">WhatsApp</span><span><bdi dir="ltr">+974 5004 0617</bdi></span></div>
     </div>
@@ -2946,6 +2953,7 @@
       <p class="fld-help" style="margin:-4px 0 12px;">Tap + to add. Prices and delivery are worked out for you — nothing to ask.</p>
       <div id="picker"></div>
     </div>
+    <p class="one-deliv in-1" id="oneDeliv">One delivery for everything: add a second box, and you still pay delivery once.</p>
     <button type="button" class="more-toggle in-1" id="pickerBtn">+ Add another item</button>
 
     <div id="sheetRest">
@@ -3292,6 +3300,7 @@
       co_loc_bad:"That does not look like a map link.",
       delivery_line:"Delivered to your door anywhere in Qatar by our driver. Delivery is extra: 15–90 QR, depending on the distance from our kitchen in Al Wakrah. We confirm it with your total on WhatsApp, and you pay once.",
       del_driver_t:"About delivery",
+      co_one_deliv:"One delivery for everything: add a second box, and you still pay delivery once.",
       co_deliv_h:"Plus delivery, 15–90 QR depending on your area. One total on WhatsApp, and you pay once.",
       hero_eyebrow:"Made in Qatar · Doha",
       hero_title:"From a Qatari home kitchen, today.",
@@ -4354,6 +4363,8 @@
     $('cartEmpty').style.display = empty ? 'block' : 'none';
     $('sheetRest').style.display = empty ? 'none' : 'block';
     $('pickerBtn').style.display = empty ? 'none' : 'block';
+    // « One delivery for everything » parle d'une deuxième boîte : rien à dire sur un panier vide.
+    if($('oneDeliv')) $('oneDeliv').style.display = empty ? 'none' : 'block';
     if(empty) showPicker(true);
     $('sheetSend').disabled = empty;
     $('sheetNext').disabled = empty;
