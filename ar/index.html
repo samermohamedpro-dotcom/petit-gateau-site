@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261105-1022">
+<meta name="pg-build" content="20261105-1200">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -732,6 +732,14 @@
      3 + 3 + 3 en trois. Les photos y gagnent ; le menu s'allonge d'une ligne.
      Le jour où le compte change (une fiche de plus, ou NOUVEAUTES vidé), ce
      choix se refait : `verif-mise-en-page.mjs` le dira.
+
+     DIX fiches, sans bandeau « New » (05/11/2026, choix « A » de Samer, sur
+     captures A / B à 390 et 1440 px, pour le retrait de la pastille du
+     12/11/2026) : 3 + 3 + 3 + 1, et la dixième prend la dernière ligne en
+     bandeau — bloc « LA FICHE SEULE SUR ORDINATEUR », plus bas. Une seule
+     règle aux deux largeurs : une fiche seule sur sa ligne devient un bandeau.
+     Deux fiches sur la dernière ligne (11 ou 8 fiches) ne sont PAS couvertes :
+     build2.py s'arrête, et la mise en page se rechoisit.
      ========================================================================= */
   @media(min-width:980px){
     .menu-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,2vw,28px);}
@@ -2029,6 +2037,27 @@
     .menu-card.is-seule h3{font-size:1.6rem;}
   }
 
+  /* ================= LA FICHE SEULE SUR ORDINATEUR — 05/11/2026 =================
+     Au-delà de 980 px le menu a trois colonnes. Dix fiches sans bandeau « New »
+     (le retrait de la pastille, 12/11/2026) font 3 + 3 + 3 + 1 : la dernière
+     finirait seule à gauche, deux trous à côté d'elle. Choix « A » de Samer,
+     sur captures côte à côte : elle prend toute la ligne, photo à côté du
+     texte — la même règle que « LA FICHE SEULE » sous 980 px, à trois colonnes.
+     Les tailles sont celles du bandeau « New » sur ordinateur (32 %, 5:4, texte
+     limité à 560 px) : une photo 4:5 sur toute la ligne ferait 800 px de haut.
+
+     Qui est seule, c'est la page qui le dit, comme pour `is-seule` : build2.py
+     § 13 bis dans la page écrite, `marquerLaSeule` (checkout.js) après chaque
+     rangement par le catalogue. Une fiche peut porter les deux classes (7 ou
+     13 fiches) : chacune ne vaut qu'à sa largeur. */
+  @media(min-width:980px){
+    .menu-card.is-seule-ordi{grid-column:1 / -1;flex-direction:row;}
+    .menu-card.is-seule-ordi .img-wrap{flex:0 0 32%;aspect-ratio:5/4;}
+    .menu-card.is-seule-ordi .menu-card-body{justify-content:center;padding:28px 36px;max-width:560px;min-width:0;}
+    .menu-card.is-seule-ordi h3{font-size:1.9rem;}
+    .menu-card.is-seule-ordi .qty-note{margin-top:14px;}
+  }
+
   /* ================= L'ARRIVÉE D'UNE VISITE FROIDE — 24/10/2026 =================
      Samer, « on veut faire de 1 à 5 », après la mesure à 390 px : le coffret à
      490 QR d'abord, le premier produit à 190 QR après deux écrans, la livraison
@@ -2601,6 +2630,99 @@
     <div class="menu-grid">
       <div class="menu-card">
         <div class="img-wrap">
+          <img src="/img/chamaral-chocolate-chunk-doha.webp" srcset="/img/chamaral-chocolate-chunk-doha-480.webp 480w, /img/chamaral-chocolate-chunk-doha-600.webp 600w, /img/chamaral-chocolate-chunk-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Homemade milk chocolate chunk cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
+          <svg class="stk stk-sparkle stk-card" aria-hidden="true" focusable="false"><use href="#stk-sparkle"/></svg>
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item8_name">كوكيز بقطع الشوكولاتة</h3>
+          <p class="desc" data-i18n="item8_desc">قطع كبيرة من شوكولاتة الحليب، بسطح متشقّق · 12 حبة</p>
+          <p class="allergens" data-allergens="item8" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">12 حبة</span><span class="qty-note-p" dir="ltr">200 QR</span></p>
+        <div class="qty-row" data-item="item8" data-price="200">
+          <button type="button" class="qty-add" data-add="item8"><span>أضف</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">200 QR</span></div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="img-wrap">
+          <img src="/img/nutella-cookies-doha.webp" srcset="/img/nutella-cookies-doha-480.webp 480w, /img/nutella-cookies-doha-600.webp 600w, /img/nutella-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Nutella-filled cookies, home-baked in Doha, Qatar" width="800" height="1000" decoding="async" loading="lazy">
+          <svg class="stk stk-heart stk-card" aria-hidden="true" focusable="false"><use href="#stk-heart"/></svg>
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item7_name">كوكيز نوتيلا</h3>
+          <p class="avis-fiche">كوكيز النوتيلا يحتاج إلى تحذير من شدة لذّته.<span class="avis-qui">— A.R.</span></p>
+          <p class="desc" data-i18n="item7_desc">طري، بقلب نوتيلا ذائب · 9 حبات</p>
+          <p class="allergens" data-allergens="item7" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">9 حبات</span><span class="qty-note-p" dir="ltr">200 QR</span></p>
+        <div class="qty-row" data-item="item7" data-price="200">
+          <button type="button" class="qty-add" data-add="item7"><span>أضف</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">200 QR</span></div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="img-wrap">
+          <img src="/img/upside-down-peach-cake-doha.webp" srcset="/img/upside-down-peach-cake-doha-480.webp 480w, /img/upside-down-peach-cake-doha-600.webp 600w, /img/upside-down-peach-cake-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Upside-down peach cake baked to order in Doha" width="800" height="901" decoding="async" loading="lazy">
+          <svg class="stk stk-sparkle stk-card" aria-hidden="true" focusable="false"><use href="#stk-sparkle"/></svg>
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item4_name">كيكة الخوخ المقلوبة</h3>
+          <p class="avis-fiche">لم أتوقع أن أحبها إلى هذا الحد.<span class="avis-qui">— N.A.</span></p>
+          <p class="desc" data-i18n="item4_desc">خوخ مكرمل، يُخبز حسب الطلب</p>
+          <p class="allergens" data-allergens="item4" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">كيكة واحدة</span><span class="qty-note-p" dir="ltr">290 QR</span></p>
+        <div class="qty-row" data-item="item4" data-price="290">
+          <button type="button" class="qty-add" data-add="item4"><span>أضف</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">290 QR</span></div>
+        </div>
+      </div>
+      <div class="menu-card is-new">
+        <div class="img-wrap">
+          <p class="new-badge">جديد</p>
+          <img src="/img/upside-down-banana-cake-doha.webp" srcset="/img/upside-down-banana-cake-doha-480.webp 480w, /img/upside-down-banana-cake-doha-600.webp 600w, /img/upside-down-banana-cake-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Upside-down banana cake with caramelized bananas, baked to order in Doha" width="800" height="1000" decoding="async" loading="lazy">
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item10_name">كيكة الموز المقلوبة</h3>
+          <p class="desc" data-i18n="item10_desc">موز مكرمل، يُخبز حسب الطلب</p>
+          <p class="allergens" data-allergens="item10" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">كيكة واحدة</span><span class="qty-note-p" dir="ltr">310 QR</span></p>
+        <div class="qty-row" data-item="item10" data-price="310">
+          <button type="button" class="qty-add" data-add="item10"><span>أضف</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">310 QR</span></div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="img-wrap">
+          <img src="/img/petit-madeleine-doha.webp" srcset="/img/petit-madeleine-doha-480.webp 480w, /img/petit-madeleine-doha-600.webp 600w, /img/petit-madeleine-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Bite-size petit madeleines beside a full-size one, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
+          <svg class="stk stk-heart stk-card" aria-hidden="true" focusable="false"><use href="#stk-heart"/></svg>
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item2_name">مادلين صغيرة</h3>
+          <p class="avis-fiche">لحسن الحظ هناك أربعون قطعة!<span class="avis-qui">— H.M.</span></p>
+          <p class="desc" data-i18n="item2_desc">بحجم اللقمة · 40 قطعة</p>
+          <p class="allergens" data-allergens="item2" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">40 قطعة</span><span class="qty-note-p" dir="ltr">190 QR</span></p>
+        <div class="qty-row" data-item="item2" data-price="190">
+          <button type="button" class="qty-add" data-add="item2"><span>أضف</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">190 QR</span></div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="img-wrap">
           <img src="/img/madeleine-box-doha.webp" srcset="/img/madeleine-box-doha-480.webp 480w, /img/madeleine-box-doha-600.webp 600w, /img/madeleine-box-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Home-baked madeleines from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
         </div>
         <div class="menu-card-body">
@@ -2618,17 +2740,32 @@
       </div>
       <div class="menu-card">
         <div class="img-wrap">
-          <img src="/img/petit-madeleine-doha.webp" srcset="/img/petit-madeleine-doha-480.webp 480w, /img/petit-madeleine-doha-600.webp 600w, /img/petit-madeleine-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Bite-size petit madeleines beside a full-size one, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
-          <svg class="stk stk-heart stk-card" aria-hidden="true" focusable="false"><use href="#stk-heart"/></svg>
+          <img src="/img/chocolate-chip-cookies-doha.webp" srcset="/img/chocolate-chip-cookies-doha-480.webp 480w, /img/chocolate-chip-cookies-doha-600.webp 600w, /img/chocolate-chip-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Homemade chocolate chip cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
         </div>
         <div class="menu-card-body">
-          <h3 data-i18n="item2_name">مادلين صغيرة</h3>
-          <p class="avis-fiche">لحسن الحظ هناك أربعون قطعة!<span class="avis-qui">— H.M.</span></p>
-          <p class="desc" data-i18n="item2_desc">بحجم اللقمة · 40 قطعة</p>
-          <p class="allergens" data-allergens="item2" hidden></p>
-          <p class="qty-note"><span class="qty-note-t">40 قطعة</span><span class="qty-note-p" dir="ltr">190 QR</span></p>
-        <div class="qty-row" data-item="item2" data-price="190">
-          <button type="button" class="qty-add" data-add="item2"><span>أضف</span></button>
+          <h3 data-i18n="item5_name">كوكيز رقائق الشوكولاتة</h3>
+          <p class="desc" data-i18n="item5_desc">12 حبة</p>
+          <p class="allergens" data-allergens="item5" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">12 حبة</span><span class="qty-note-p" dir="ltr">190 QR</span></p>
+        <div class="qty-row" data-item="item5" data-price="190">
+          <button type="button" class="qty-add" data-add="item5"><span>أضف</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">190 QR</span></div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="img-wrap">
+          <img src="/img/petit-cookies-doha.webp" srcset="/img/petit-cookies-doha-480.webp 480w, /img/petit-cookies-doha-600.webp 600w, /img/petit-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Bite-size petit cookies with milk chocolate, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item9_name">كوكيز صغيرة</h3>
+          <p class="desc" data-i18n="item9_desc">بحجم اللقمة · 60 قطعة</p>
+          <p class="allergens" data-allergens="item9" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">60 قطعة</span><span class="qty-note-p" dir="ltr">190 QR</span></p>
+        <div class="qty-row" data-item="item9" data-price="190">
+          <button type="button" class="qty-add" data-add="item9"><span>أضف</span></button>
             <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
             <span class="qty-val">0</span>
             <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
@@ -2654,43 +2791,7 @@
           <span class="qty-price" dir="ltr">290 QR</span></div>
         </div>
       </div>
-      <div class="menu-card">
-        <div class="img-wrap">
-          <img src="/img/upside-down-peach-cake-doha.webp" srcset="/img/upside-down-peach-cake-doha-480.webp 480w, /img/upside-down-peach-cake-doha-600.webp 600w, /img/upside-down-peach-cake-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Upside-down peach cake baked to order in Doha" width="800" height="901" decoding="async" loading="lazy">
-          <svg class="stk stk-sparkle stk-card" aria-hidden="true" focusable="false"><use href="#stk-sparkle"/></svg>
-        </div>
-        <div class="menu-card-body">
-          <h3 data-i18n="item4_name">كيكة الخوخ المقلوبة</h3>
-          <p class="avis-fiche">لم أتوقع أن أحبها إلى هذا الحد.<span class="avis-qui">— N.A.</span></p>
-          <p class="desc" data-i18n="item4_desc">خوخ مكرمل، يُخبز حسب الطلب</p>
-          <p class="allergens" data-allergens="item4" hidden></p>
-          <p class="qty-note"><span class="qty-note-t">كيكة واحدة</span><span class="qty-note-p" dir="ltr">290 QR</span></p>
-        <div class="qty-row" data-item="item4" data-price="290">
-          <button type="button" class="qty-add" data-add="item4"><span>أضف</span></button>
-            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
-            <span class="qty-val">0</span>
-            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
-          <span class="qty-price" dir="ltr">290 QR</span></div>
-        </div>
-      </div>
-      <div class="menu-card">
-        <div class="img-wrap">
-          <img src="/img/chocolate-chip-cookies-doha.webp" srcset="/img/chocolate-chip-cookies-doha-480.webp 480w, /img/chocolate-chip-cookies-doha-600.webp 600w, /img/chocolate-chip-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Homemade chocolate chip cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
-        </div>
-        <div class="menu-card-body">
-          <h3 data-i18n="item5_name">كوكيز رقائق الشوكولاتة</h3>
-          <p class="desc" data-i18n="item5_desc">12 حبة</p>
-          <p class="allergens" data-allergens="item5" hidden></p>
-          <p class="qty-note"><span class="qty-note-t">12 حبة</span><span class="qty-note-p" dir="ltr">190 QR</span></p>
-        <div class="qty-row" data-item="item5" data-price="190">
-          <button type="button" class="qty-add" data-add="item5"><span>أضف</span></button>
-            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
-            <span class="qty-val">0</span>
-            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
-          <span class="qty-price" dir="ltr">190 QR</span></div>
-        </div>
-      </div>
-      <div class="menu-card">
+      <div class="menu-card is-seule">
         <div class="img-wrap">
           <img src="/img/rusk-shabora-doha.webp" srcset="/img/rusk-shabora-doha-480.webp 480w, /img/rusk-shabora-doha-600.webp 600w, /img/rusk-shabora-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Rusk Shabora, twice-baked homemade biscuits in Doha" width="800" height="975" decoding="async" loading="lazy">
         </div>
@@ -2706,78 +2807,6 @@
             <span class="qty-val">0</span>
             <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
           <span class="qty-price" dir="ltr">190 QR</span></div>
-        </div>
-      </div>
-      <div class="menu-card">
-        <div class="img-wrap">
-          <img src="/img/nutella-cookies-doha.webp" srcset="/img/nutella-cookies-doha-480.webp 480w, /img/nutella-cookies-doha-600.webp 600w, /img/nutella-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Nutella-filled cookies, home-baked in Doha, Qatar" width="800" height="1000" decoding="async" loading="lazy">
-          <svg class="stk stk-heart stk-card" aria-hidden="true" focusable="false"><use href="#stk-heart"/></svg>
-        </div>
-        <div class="menu-card-body">
-          <h3 data-i18n="item7_name">كوكيز نوتيلا</h3>
-          <p class="avis-fiche">كوكيز النوتيلا يحتاج إلى تحذير من شدة لذّته.<span class="avis-qui">— A.R.</span></p>
-          <p class="desc" data-i18n="item7_desc">طري، بقلب نوتيلا ذائب · 9 حبات</p>
-          <p class="allergens" data-allergens="item7" hidden></p>
-          <p class="qty-note"><span class="qty-note-t">9 حبات</span><span class="qty-note-p" dir="ltr">200 QR</span></p>
-        <div class="qty-row" data-item="item7" data-price="200">
-          <button type="button" class="qty-add" data-add="item7"><span>أضف</span></button>
-            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
-            <span class="qty-val">0</span>
-            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
-          <span class="qty-price" dir="ltr">200 QR</span></div>
-        </div>
-      </div>
-      <div class="menu-card">
-        <div class="img-wrap">
-          <img src="/img/chamaral-chocolate-chunk-doha.webp" srcset="/img/chamaral-chocolate-chunk-doha-480.webp 480w, /img/chamaral-chocolate-chunk-doha-600.webp 600w, /img/chamaral-chocolate-chunk-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Homemade milk chocolate chunk cookies from a Doha home bakery" width="800" height="1000" decoding="async" loading="lazy">
-          <svg class="stk stk-sparkle stk-card" aria-hidden="true" focusable="false"><use href="#stk-sparkle"/></svg>
-        </div>
-        <div class="menu-card-body">
-          <h3 data-i18n="item8_name">كوكيز بقطع الشوكولاتة</h3>
-          <p class="desc" data-i18n="item8_desc">قطع كبيرة من شوكولاتة الحليب، بسطح متشقّق · 12 حبة</p>
-          <p class="allergens" data-allergens="item8" hidden></p>
-          <p class="qty-note"><span class="qty-note-t">12 حبة</span><span class="qty-note-p" dir="ltr">200 QR</span></p>
-        <div class="qty-row" data-item="item8" data-price="200">
-          <button type="button" class="qty-add" data-add="item8"><span>أضف</span></button>
-            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
-            <span class="qty-val">0</span>
-            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
-          <span class="qty-price" dir="ltr">200 QR</span></div>
-        </div>
-      </div>
-      <div class="menu-card is-seule">
-        <div class="img-wrap">
-          <img src="/img/petit-cookies-doha.webp" srcset="/img/petit-cookies-doha-480.webp 480w, /img/petit-cookies-doha-600.webp 600w, /img/petit-cookies-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Bite-size petit cookies with milk chocolate, home-baked in Doha" width="800" height="1000" decoding="async" loading="lazy">
-        </div>
-        <div class="menu-card-body">
-          <h3 data-i18n="item9_name">كوكيز صغيرة</h3>
-          <p class="desc" data-i18n="item9_desc">بحجم اللقمة · 60 قطعة</p>
-          <p class="allergens" data-allergens="item9" hidden></p>
-          <p class="qty-note"><span class="qty-note-t">60 قطعة</span><span class="qty-note-p" dir="ltr">190 QR</span></p>
-        <div class="qty-row" data-item="item9" data-price="190">
-          <button type="button" class="qty-add" data-add="item9"><span>أضف</span></button>
-            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
-            <span class="qty-val">0</span>
-            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
-          <span class="qty-price" dir="ltr">190 QR</span></div>
-        </div>
-      </div>
-      <div class="menu-card is-new">
-        <div class="img-wrap">
-          <p class="new-badge">جديد</p>
-          <img src="/img/upside-down-banana-cake-doha.webp" srcset="/img/upside-down-banana-cake-doha-480.webp 480w, /img/upside-down-banana-cake-doha-600.webp 600w, /img/upside-down-banana-cake-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Upside-down banana cake with caramelized bananas, baked to order in Doha" width="800" height="1000" decoding="async" loading="lazy">
-        </div>
-        <div class="menu-card-body">
-          <h3 data-i18n="item10_name">كيكة الموز المقلوبة</h3>
-          <p class="desc" data-i18n="item10_desc">موز مكرمل، يُخبز حسب الطلب</p>
-          <p class="allergens" data-allergens="item10" hidden></p>
-          <p class="qty-note"><span class="qty-note-t">كيكة واحدة</span><span class="qty-note-p" dir="ltr">310 QR</span></p>
-        <div class="qty-row" data-item="item10" data-price="310">
-          <button type="button" class="qty-add" data-add="item10"><span>أضف</span></button>
-            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
-            <span class="qty-val">0</span>
-            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
-          <span class="qty-price" dir="ltr">310 QR</span></div>
         </div>
       </div>
     </div>
@@ -5447,64 +5476,20 @@
       });
       reparerRangees();
       syncContenuPartout();
-      rangerLeMenu(produits);
       refresh();
       if($('dateRail') && $('dateRail').children.length) syncDates();
     }
 
-    /* L'ordre suivait la liste écrite en dur dans build2.py. Samer a mis
-       « ordre 1 » sur le Shabora dans l'app et rien n'a bougé : le champ
-       `ordre` était publié par l'app et lu par personne. Un réglage qui ne
-       fait rien est pire qu'un réglage absent — on le change, on constate que
-       ça ne marche pas, et on cesse de faire confiance au reste.
-
-       Il range DEUX listes : le carrousel de sélections et les cartes du
-       menu. Une seule fonction pour les deux, et ce n'est pas de l'élégance :
-       du 30/08 au 02/09, seul le rail suivait le catalogue. On réglait
-       `ordre`, la moitié de la page bougeait, l'autre non — plus déroutant
-       encore qu'un réglage inerte, parce qu'on croyait qu'il marchait.
-
-       Les cartes restent ÉCRITES dans la page (photo, texte, prix de repli) :
-       c'est ce que Google lit, et ce qu'une cliente sans réseau voit. Seul
-       leur ORDRE bouge. Une carte dont le produit n'est pas au catalogue garde
-       sa place d'origine, à la fin. */
-    function rangerParOrdre(hote, carte, cleDe, produits){
-      var conteneur = document.querySelector(hote);
-      if(!conteneur) return;
-      var rang = {};
-      produits.forEach(function(p){
-        if(p && p.cle && Number.isFinite(Number(p.ordre))) rang[p.cle] = Number(p.ordre);
-      });
-      var cartes = [].slice.call(conteneur.querySelectorAll(carte));
-      if(cartes.length < 2) return;
-      var avec = cartes.map(function(c, i){
-        var cle = cleDe(c);
-        return { el: c, place: i, rang: (cle && rang[cle] != null) ? rang[cle] : Infinity };
-      });
-      avec.sort(function(a, b){ return (a.rang - b.rang) || (a.place - b.place); });
-      avec.forEach(function(x){ conteneur.appendChild(x.el); });
-    }
-
-    // Le rail est parti le 04/09/2026 au soir : il ne reste que le menu à ranger.
-    function rangerLeMenu(produits){
-      rangerParOrdre('.menu-grid', '.menu-card', function(c){
-        var q = c.querySelector('.qty-row');
-        return q && q.getAttribute('data-item');
-      }, produits);
-      marquerLaSeule();
-    }
-
-    // La fiche SEULE (29/10/2026, choix « B » de Samer) : la page écrite la
-    // marque dans SON ordre (build2.py § 13 bis) ; dès que l'app réordonne le
-    // menu, la dernière n'est plus la même, et la marque la suit. Le bandeau
-    // « New » n'en fait pas partie : il se place en tête quel que soit l'ordre.
-    // Le CSS n'en fait un bandeau que sous 980 px (bloc « LA FICHE SEULE »).
-    function marquerLaSeule(){
-      var cartes = [].slice.call(document.querySelectorAll('.menu-grid .menu-card'))
-        .filter(function(c){ return !c.classList.contains('is-new'); });
-      cartes.forEach(function(c){ c.classList.remove('is-seule'); });
-      if(cartes.length % 2) cartes[cartes.length - 1].classList.add('is-seule');
-    }
+    /* L'ORDRE DU MENU ne vient plus de l'app (05/11/2026). Du 02/09 au 05/11, le
+       catalogue réordonnait les fiches par leur champ `ordre`, saisi produit par
+       produit dans l'app — et le meilleur vendeur avait fini huitième. Le conseil
+       des cinq a choisi un ordre, écrit dans strings.py (`ORDRE_DU_MENU`) et posé
+       par build2.py ; le champ est retiré de l'app (Samer : « pas besoin, si j'ai
+       besoin on le fera ensemble »). La page écrite est donc dans le bon ordre
+       dès le premier dessin, et rien ne la déplace ensuite : plus de
+       `rangerParOrdre`, plus de `rangerLeMenu`, et `marquerLaSeule` est partie
+       avec eux — la fiche seule est marquée une fois, par build2.py, et ne
+       change plus de place. */
 
     // Le carnet ne dit que des « non » : telle date est prise, tel produit
     // l'est ce jour-là, telle heure est fermée. Aucun compte n'y figure —
