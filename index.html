@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261105-1200">
+<meta name="pg-build" content="20261105-1648">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3325,6 +3325,7 @@
       co_loc_paste:"Paste a Google Maps link",
       co_loc_how:"Open Google Maps, hold your finger on the spot, then Share → Copy link. Addresses in Doha are rarely precise — a pin saves the driver a call.",
       co_loc_bad:"That does not look like a map link.",
+      co_m_loc_later:"📍 I'll send my location pin right after this message.",
       delivery_line:"Delivered to your door anywhere in Qatar by our driver. Delivery is extra: 15–90 QR, depending on the distance from our kitchen in Al Wakrah. We confirm it with your total on WhatsApp, and you pay once.",
       del_driver_t:"About delivery",
       co_one_deliv:"One delivery for everything: add a second box, and you still pay delivery once.",
@@ -4806,7 +4807,16 @@
     m.push(T('co_m_where') + ': ' + (zone ? T('co_zoneno') + ' ' + zone + ' \u00b7 ' : '')
            + T('co_city') + ' ' + $('fCity').value.trim()
            + ' \u00b7 ' + T('co_house') + ' ' + $('fHouse').value.trim());
+    // Sans point, la cliente lit dans son propre message qu'elle doit l'envoyer
+    // (05/11/2026) : c'est le point qui permet de chiffrer la course sur Snoonu.
+    // Pas `T()` pour le rappel : sur une phrase VIDE (« Doha n'a pas encore
+    // relu »), T rend le NOM de la clé, et la cliente enverrait
+    // « co_m_loc_later ». Le dictionnaire `en` porte les textes de LA LANGUE DE
+    // LA PAGE — la page arabe y met l'arabe ; `ar` ne porte que les quantités
+    // (build2.py) —, c'est donc lui qu'on lit, et une phrase vide reste vide.
+    var rappelPoint = translations.en.co_m_loc_later || '';
     if(S.loc) m.push(T('co_m_loc') + ': ' + S.loc);
+    else if(rappelPoint) m.push(rappelPoint);
     // Le numéro saisi en premier est celui de la cliente. Le message garde
     // les libellés que l'app relit : « Receiver's number » est celui de la
     // personne qui reçoit — la cliente elle-même, sauf cadeau — et « My
