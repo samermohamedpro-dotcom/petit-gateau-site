@@ -9,10 +9,14 @@
   — WhatsApp ouvre les liens pour en faire un aperçu. Un robot ne lance pas de
     JavaScript : il ne peut donc pas créer un paiement à sa place.
 
-  Anglais seul pour l'instant. Depuis le 04/11/2026, le lien part AUSSI aux
-  commandes en arabe (`cfm_card` validé par Doha) : Samer a choisi de ne pas
-  attendre l'arabe de cette page, à préparer et à faire valider (A-FAIRE.md,
-  « La carte en arabe »).
+  Anglais ET arabe depuis le 05/11/2026 : l'arabe ci-dessous est celui que sa
+  femme a validé ce jour-là (Samer : « arabe validé »). Ne pas le retoucher sans
+  Doha. La langue vient de deux endroits, et la fonction l'emporte :
+  — `l=ar` dans le lien, que l'app ajoute pour une commande arabe : c'est ce
+    qui rend arabe le tout premier écran, avant SkipCash ;
+  — `langue` dans la réponse de `payer` (`etat=1`), qui lit le document du
+    paiement : un lien ancien, sans `l=`, s'affiche quand même dans la bonne
+    langue au retour, et un `l=ar` ajouté à la main ne change rien.
 -->
 <html lang="en">
 <head>
@@ -25,6 +29,8 @@
 @font-face{font-family:Figtree;font-weight:400;font-display:swap;src:url(/fonts/figtree-latin-400-normal.woff2) format('woff2')}
 @font-face{font-family:Figtree;font-weight:700;font-display:swap;src:url(/fonts/figtree-latin-700-normal.woff2) format('woff2')}
 @font-face{font-family:Fraunces;font-weight:700;font-display:swap;src:url(/fonts/fraunces-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:Cairo;font-weight:400;font-display:swap;src:url(/fonts/cairo-arabic-400-normal.woff2) format('woff2')}
+@font-face{font-family:Cairo;font-weight:700;font-display:swap;src:url(/fonts/cairo-arabic-700-normal.woff2) format('woff2')}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#FAF6EC;color:#5E1622;font:400 17px/1.55 Figtree,system-ui,sans-serif;text-align:center}
 main{max-width:420px}
@@ -33,6 +39,8 @@ h1{font:700 30px/1.18 Fraunces,Georgia,serif;letter-spacing:-.005em;margin:0 0 1
 p{margin:0 0 20px}
 a.action{display:inline-block;min-height:48px;padding:12px 28px;border-radius:999px;background:#2E5A3E;color:#fff;font-weight:700;text-decoration:none}
 a.action[hidden]{display:none}
+html[lang=ar] body{font-family:Cairo,Figtree,system-ui,sans-serif}
+html[lang=ar] h1{font:700 28px/1.4 Cairo,system-ui,sans-serif;letter-spacing:0}
 </style>
 </head>
 <body>
@@ -45,37 +53,86 @@ a.action[hidden]{display:none}
 <script>
 (function(){
   var FONCTION = 'https://me-central1-petit-gateau-ab7de.cloudfunctions.net/payer';
+  // L'arabe : validé par Doha le 05/11/2026, mot pour mot.
+  var TEXTES = {
+    en: {
+      page: 'Petit Gâteau · Payment',
+      attente: ['One moment…', 'Opening the secure payment page.'],
+      whatsapp: 'Message us on WhatsApp',
+      invalide: ['This link is no longer valid', 'Message us and we’ll sort it out.'],
+      panne: ['Card payment isn’t available right now', 'Nothing was charged. Try again in a moment, or pay by Fawran.'],
+      reessayer: 'Try again',
+      merci: 'Thank you',
+      recu: 'Your payment is received. We’ll see you with your order.',
+      presque: ['Almost there', 'Your payment is still being confirmed. If you completed it, there’s nothing more to do.'],
+      retourPaiement: 'Back to payment',
+      pasFini: ['Payment not completed', 'Nothing was charged. You can try again.'],
+      ecart: 'We received your payment and will check it with you on WhatsApp.',
+      illisible: ['We couldn’t check your payment', 'If you completed it, it’s safe: we’ll confirm on WhatsApp.'],
+      direPaye: 'Hi! I’ve just paid for my order by card. Thank you!'
+    },
+    ar: {
+      page: 'Petit Gâteau · الدفع',
+      attente: ['لحظة من فضلك…', 'جارٍ فتح صفحة الدفع الآمنة.'],
+      whatsapp: 'راسلنا على واتساب',
+      invalide: ['هذا الرابط لم يعد صالحًا', 'راسلنا وسنحلّ الأمر.'],
+      panne: ['الدفع بالبطاقة غير متاح حاليًا', 'لم يُخصم أي مبلغ. حاول مرة أخرى بعد قليل، أو ادفع عبر فوران.'],
+      reessayer: 'حاول مرة أخرى',
+      merci: 'شكرًا لك',
+      recu: 'وصلنا دفعك. نراك قريبًا مع طلبك.',
+      presque: ['على وشك الانتهاء', 'ما زال دفعك قيد التأكيد. إذا أكملته، فلا داعي لفعل أي شيء آخر.'],
+      retourPaiement: 'العودة إلى الدفع',
+      pasFini: ['لم يكتمل الدفع', 'لم يُخصم أي مبلغ. يمكنك المحاولة مرة أخرى.'],
+      ecart: 'وصلنا دفعك، وسنتأكد منه معك على واتساب.',
+      illisible: ['لم نتمكن من التحقق من دفعك', 'إذا أكملته فهو محفوظ: سنؤكد لك على واتساب.'],
+      direPaye: 'مرحبًا! دفعت للتو ثمن طلبي بالبطاقة. شكرًا!'
+    }
+  };
   var q = String(location.search);
   // Une expression plutôt que URLSearchParams : SkipCash ajoute ses paramètres
   // au retour, et on ne sait pas s'il respecte le « ? » déjà présent.
   var m = q.match(/[?&]c=([A-Za-z0-9_-]{20,40})/);
   var retour = /[?&]retour=1/.test(q);
   var erreur = /[?&]erreur=1/.test(q);
+  var WHATSAPP = document.getElementById('action').href;
+  var T;
+  function langue(l){
+    T = TEXTES[l === 'ar' ? 'ar' : 'en'];
+    document.documentElement.lang = l === 'ar' ? 'ar' : 'en';
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+    document.title = T.page;
+  }
   function dire(titre, texte, bouton, cible){
     document.getElementById('titre').textContent = titre;
     document.getElementById('texte').textContent = texte;
     var a = document.getElementById('action');
     a.hidden = !bouton;
-    if(bouton){ a.textContent = bouton; if(cible) a.href = cible; }
+    if(bouton){ a.textContent = bouton; a.href = cible || WHATSAPP; }
   }
-  var INVALIDE = ['This link is no longer valid', 'Message us and we’ll sort it out.', 'Message us on WhatsApp'];
   // Seulement quand la fonction a dit « payé » : ce message affirme un paiement.
-  var DIRE_PAYE = document.getElementById('action').href + '?text=' + encodeURIComponent('Hi! I’ve just paid for my order by card. Thank you!');
-  if(!m){ dire.apply(null, INVALIDE); return; }
+  function direPaye(){ return WHATSAPP + '?text=' + encodeURIComponent(T.direPaye); }
+  langue(/[?&]l=ar(&|$)/.test(q) ? 'ar' : 'en');
+  if(!m){ dire(T.invalide[0], T.invalide[1], T.whatsapp); return; }
   var payer = FONCTION + '?c=' + m[1];
-  if(!retour){ location.replace(payer); return; }
-  if(erreur){
-    dire('Card payment isn’t available right now', 'Nothing was charged. Try again in a moment, or pay by Fawran.', 'Try again', location.pathname + '?c=' + m[1]);
+  var ici = location.pathname + '?c=' + m[1] + (document.documentElement.lang === 'ar' ? '&l=ar' : '');
+  if(!retour){
+    dire(T.attente[0], T.attente[1]);
+    location.replace(payer + (document.documentElement.lang === 'ar' ? '&l=ar' : ''));
     return;
   }
+  if(erreur){ dire(T.panne[0], T.panne[1], T.reessayer, ici); return; }
   fetch(payer + '&etat=1', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(p){
-    if(p.statut === 'payee') dire('Thank you', 'Your payment is received. We’ll see you with your order.', 'Message us on WhatsApp', DIRE_PAYE);
-    else if(p.statut === 'en-cours') dire('Almost there', 'Your payment is still being confirmed. If you completed it, there’s nothing more to do.', 'Back to payment', location.pathname + '?c=' + m[1]);
-    else if(p.statut === 'a-payer' || p.statut === 'echouee' || p.statut === 'rejetee') dire('Payment not completed', 'Nothing was charged. You can try again.', 'Try again', location.pathname + '?c=' + m[1]);
-    else if(p.statut === 'ecart') dire('Thank you', 'We received your payment and will check it with you on WhatsApp.', 'Message us on WhatsApp', DIRE_PAYE);
-    else dire.apply(null, INVALIDE);
+    if(p.langue === 'ar' || p.langue === 'en'){
+      langue(p.langue);
+      ici = location.pathname + '?c=' + m[1] + (p.langue === 'ar' ? '&l=ar' : '');
+    }
+    if(p.statut === 'payee') dire(T.merci, T.recu, T.whatsapp, direPaye());
+    else if(p.statut === 'en-cours') dire(T.presque[0], T.presque[1], T.retourPaiement, ici);
+    else if(p.statut === 'a-payer' || p.statut === 'echouee' || p.statut === 'rejetee') dire(T.pasFini[0], T.pasFini[1], T.reessayer, ici);
+    else if(p.statut === 'ecart') dire(T.merci, T.ecart, T.whatsapp, direPaye());
+    else dire(T.invalide[0], T.invalide[1], T.whatsapp);
   }).catch(function(){
-    dire('We couldn’t check your payment', 'If you completed it, it’s safe: we’ll confirm on WhatsApp.', 'Message us on WhatsApp');
+    dire(T.illisible[0], T.illisible[1], T.whatsapp);
   });
 })();
 </script>
