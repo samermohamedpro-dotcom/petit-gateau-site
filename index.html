@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261114-1550">
+<meta name="pg-build" content="20261115-1939">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2313,6 +2313,19 @@
         },
         {
           "@type": "MenuItem",
+          "name": "Mix box (Choco Chunk & Double Choco Chunk)",
+          "alternateName": "ميكس بوكس (كوكيز بقطع الشوكولاتة ودبل شوكولاتة)",
+          "description": "Six double chocolate cookies and six milk chocolate chunk cookies, a dozen.",
+          "image": "https://petit-gateau.com/img/mix-box-doha.webp",
+          "offers": {
+            "@type": "Offer",
+            "price": "220",
+            "priceCurrency": "QAR",
+            "availability": "https://schema.org/InStock"
+          }
+        },
+        {
+          "@type": "MenuItem",
           "name": "The Discovery Box",
           "alternateName": "صندوق الاكتشاف",
           "description": "A box of everything: one cake, one box of cookies and one box of madeleines, each of your choice.",
@@ -2654,6 +2667,24 @@
       <p class="scarce" id="scarce" hidden></p>
     </div>
     <div class="menu-grid">
+      <div class="menu-card is-new">
+        <div class="img-wrap">
+          <p class="new-badge">New</p>
+          <img src="/img/mix-box-doha.webp" srcset="/img/mix-box-doha-480.webp 480w, /img/mix-box-doha-600.webp 600w, /img/mix-box-doha.webp 800w" sizes="(max-width: 979px) 48vw, 370px" alt="Twelve cookies in one box: six double chocolate and six milk chocolate chunk, baked to order in Doha" width="800" height="1000" decoding="async" loading="lazy">
+        </div>
+        <div class="menu-card-body">
+          <h3 data-i18n="item12_name">Mix box (Choco Chunk &amp; Double Choco Chunk)</h3>
+          <p class="desc" data-i18n="item12_desc">Six Double Choco, six Choco Chunk · dozen</p>
+          <p class="allergens" data-allergens="item12" hidden></p>
+          <p class="qty-note"><span class="qty-note-t">12 pieces</span><span class="qty-note-p" dir="ltr">220 QR</span></p>
+        <div class="qty-row" data-item="item12" data-price="220">
+          <button type="button" class="qty-add" data-add="item12"><span>Add</span></button>
+            <button class="qty-btn" data-action="dec" aria-label="Decrease quantity">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn" data-action="inc" aria-label="Increase quantity">+</button>
+          <span class="qty-price" dir="ltr">220 QR</span></div>
+        </div>
+      </div>
       <div class="menu-card is-new">
         <div class="img-wrap">
           <p class="new-badge">New</p>
@@ -3230,6 +3261,7 @@
       item9_qty:"60 pieces",
       item10_qty:"1 cake",
       item11_qty:"12 pieces",
+      item12_qty:"12 pieces",
       spread_qty:"1 upside-down peach cake · 12 cookies · 40 petit madeleines",
       majlis4_qty:"12 madeleines · 12 cookies · 1 upside-down peach cake",
       majlis6_qty:"12 cookies · 12 cookies · 1 upside-down peach cake · 12 madeleines",
@@ -3261,6 +3293,7 @@
       item9_name:"Petit Cookies", item9_desc:"Bite-size · 60 pieces",
       item10_name:"Upside-Down Banana Cake", item10_desc:"Caramelized banana, baked to order",
       item11_name:"Double Choco Chunk", item11_desc:"Cocoa dough, milk chocolate chunks · dozen",
+      item12_name:"Mix box (Choco Chunk & Double Choco Chunk)", item12_desc:"Six Double Choco, six Choco Chunk · dozen",
       order_send:"Send Order via WhatsApp",
       order_greeting:"Hi! I'd like to order:", order_total:"Total",
       spread_label:"Taste Everything", spread_title:"The Discovery Box",
@@ -3352,6 +3385,7 @@
       item9_qty:"60 pieces",
       item10_qty:"1 cake",
       item11_qty:"12 pieces",
+      item12_qty:"12 pieces",
       spread_qty:"1 upside-down peach cake · 12 cookies · 40 petit madeleines",
       majlis4_qty:"12 madeleines · 12 cookies · 1 upside-down peach cake",
       majlis6_qty:"12 cookies · 12 cookies · 1 upside-down peach cake · 12 madeleines",
@@ -3465,6 +3499,7 @@
       item9_qty:"60 قطعة",
       item10_qty:"كيكة واحدة",
       item11_qty:"12 حبة",
+      item12_qty:"12 حبة",
       spread_qty:"1 كيكة خوخ مقلوبة · 12 كوكيز · 40 مادلين صغيرة",
       majlis4_qty:"12 مادلين · 12 كوكيز · 1 كيكة خوخ مقلوبة",
       majlis6_qty:"12 كوكيز · 12 كوكيز · 1 كيكة خوخ مقلوبة · 12 مادلين",
@@ -3496,6 +3531,7 @@
       item9_name:"كوكيز صغيرة", item9_desc:"بحجم اللقمة · 60 قطعة",
       item10_name:"كيكة الموز المقلوبة", item10_desc:"موز مكرمل، يُخبز حسب الطلب",
       item11_name:"كوكيز دبل شوكولاتة", item11_desc:"عجينة بالكاكاو وقطع شوكولاتة الحليب · 12 حبة",
+      item12_name:"ميكس بوكس (كوكيز بقطع الشوكولاتة ودبل شوكولاتة)", item12_desc:"ستة كوكيز دبل شوكولاتة وستة بقطع الشوكولاتة · 12 حبة",
       order_send:"إرسال الطلب عبر واتساب",
       order_greeting:"مرحبًا! أرغب بطلب:", order_total:"المجموع",
       spread_label:"تذوّق كل شيء", spread_title:"صندوق الاكتشاف",
