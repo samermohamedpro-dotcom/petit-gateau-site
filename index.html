@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261117-1736">
+<meta name="pg-build" content="20261117-1918">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -735,6 +735,30 @@
     font-family:var(--police);font-size:0.9rem;font-weight:700;line-height:1.4;
     color:var(--deep-green);margin:0 0 4px;
   }
+
+  /* ================= LE CODE TAPÉ PAR LA PROCHE (17/11/2026) =================
+     « Have a code? » est un lien du panier, du même dessin que « Delivering
+     somewhere else? » (`.loc-more`) : discret, replié pour toutes (Samer,
+     « Oui, lien discret »). Ouvert, une case et « Apply » sur une rangée. */
+  .code-pli{margin-top:2px;}
+  .code-pli .loc-more{margin-top:4px;}
+  .code-row{display:flex;gap:8px;align-items:stretch;margin-top:2px;}
+  .fld .code-row input[type=text]{flex:1 1 auto;min-width:0;margin:0;letter-spacing:0.06em;}
+  .code-go{
+    flex:0 0 auto;min-height:44px;padding:0 18px;cursor:pointer;
+    border:1.5px solid var(--deep-green);border-radius:999px;background:#fff;
+    font-family:var(--police);font-size:0.9rem;font-weight:700;color:var(--deep-green);
+  }
+  .code-go:disabled{opacity:0.55;cursor:default;}
+  .code-msg{margin:8px 0 0;font-size:0.85rem;line-height:1.4;color:var(--maroon);}
+  .code-msg:empty{display:none;}
+  .code-msg.ok{color:var(--deep-green);font-weight:700;}
+  /* Le prix plein barré d'une ligne du panier, au-dessus du sien. */
+  .cart-line .cl-price .prix-plein{
+    display:block;text-align:right;white-space:nowrap;
+    font-size:0.78rem;font-weight:600;line-height:1.2;color:var(--dusty-rose);
+  }
+  [dir="rtl"] .cart-line .cl-price .prix-plein{text-align:left;}
 
 
   /* ================= FINS DE LIGNE ORPHELINES (ordinateur seulement) =========
@@ -3081,6 +3105,21 @@
       <span class="fld-label">Your basket</span>
       <div id="cartLines"></div>
       <p class="pick-empty" id="cartEmpty">Your basket is empty.</p>
+      <!-- Le code privé, tapé par la proche (17/11/2026). Un lien discret,
+           replié pour toutes : une case ouverte annoncerait à chaque cliente
+           que d'autres paient moins (règle « Un geste privé n'est pas une
+           remise », 4-BRANDING/CHARTE.md). checkout.js le cache tant que le
+           panier est vide, et l'ouvre seul quand un lien privé est valable. -->
+      <div class="code-pli" id="codeWrap" style="display:none">
+        <button type="button" class="loc-more" id="codeMore" aria-expanded="false" aria-controls="codeElse">Have a code?</button>
+        <div class="more-fields code-else" id="codeElse">
+          <div class="code-row">
+            <input type="text" id="codeIn" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Your code" aria-label="Your code" dir="ltr">
+            <button type="button" class="code-go" id="codeGo">Apply</button>
+          </div>
+          <p class="code-msg" id="codeMsg" role="status" aria-live="polite"></p>
+        </div>
+      </div>
     </div>
 
     <div class="fld in-1" id="pickerWrap">
@@ -3441,6 +3480,13 @@
       co_loc_paste:"Paste a Google Maps link",
       co_loc_how:"Open Google Maps, hold your finger on the spot, then Share → Copy link. Addresses in Doha are rarely precise — a pin saves the driver a call.",
       co_loc_bad:"That does not look like a map link.",
+      co_code_open:"Have a code?",
+      co_code_ph:"Your code",
+      co_code_apply:"Apply",
+      co_code_ok:"Your code is applied.",
+      co_code_boxes:"Your code does not apply to boxes.",
+      co_code_bad:"This code is not valid. It may have been used already.",
+      co_code_later:"We will apply it when we confirm your order on WhatsApp.",
       co_m_loc_later:"📍 I'll send my location pin right after this message.",
       delivery_line:"Delivered to your door anywhere in Qatar by our driver. Delivery is extra: 15–90 QR, depending on the distance from our kitchen in Al Wakrah. We confirm it with your total on WhatsApp, and you pay once.",
       del_driver_t:"About delivery",
@@ -4150,6 +4196,7 @@
     var c = count(), sub = subtotal(), active = c > 0;
     $('orderTotal').textContent = (sub - gesteTotal()) + ' ' + T('qr');
     peindreGeste();
+    peindreCode();
     // La règle de livraison, dite dès la barre — avant la feuille, pas au fond
     // de celle-ci (24/09/2026, option B de la recherche : aucun montant, la
     // règle du 17/09/2026 intacte). La phrase est celle, déjà validée, du total.
@@ -4615,6 +4662,8 @@
     $('pickerBtn').style.display = empty ? 'none' : 'block';
     // « One delivery for everything » parle d'une deuxième boîte : rien à dire sur un panier vide.
     if($('oneDeliv')) $('oneDeliv').style.display = empty ? 'none' : 'block';
+    // « Have a code? » n'a rien à baisser dans un panier vide.
+    if($('codeWrap')) $('codeWrap').style.display = empty ? 'none' : 'block';
     if(empty) showPicker(true);
     $('sheetSend').disabled = empty;
     $('sheetNext').disabled = empty;
@@ -4629,12 +4678,20 @@
       // nomme les produits retenus AVEC leurs quantités, l'écrire aussi
       // derrière le titre le disait deux fois sur la même ligne.
       var choix = '';
+      // Le geste d'un code (17/11/2026) se lit aussi dans le panier : c'est là
+      // que la proche tape son code, et là qu'elle doit voir ce qu'il change.
+      // Zéro pour tout le monde : la ligne reste alors celle d'avant.
+      var g = gesteUnite(id), unite = PRICES[id] - g;
       line.innerHTML =
         '<div class="cl-name">'+ html(NAME(id)) + choix
       + (QTY(id) ? '<span class="cl-qty">' + html(QTY(id)) + '</span>' : '')
-      + '<span class="cl-sub">'+ ORDER[id] + ' \u00d7 ' + PRICES[id] +' '+T('qr')+'</span></div>'
+      + '<span class="cl-sub">'+ ORDER[id] + ' \u00d7 ' + unite +' '+T('qr')+'</span></div>'
       + '<div class="cl-step"><button type="button" data-a="dec">−</button><span>'+ORDER[id]+'</span><button type="button" data-a="inc">+</button></div>'
-      + '<div class="cl-price">'+ (ORDER[id]*PRICES[id]) +' '+T('qr')+'</div>';
+      + '<div class="cl-price">'
+      // Sans `dir` : écrit comme le prix d'à côté (« QR 160 » en arabe), sinon
+      // les deux montants se lisaient dans deux ordres différents (capture AR).
+      + (g > 0 ? '<s class="prix-plein">' + (ORDER[id]*PRICES[id]) + ' ' + T('qr') + '</s>' : '')
+      + (ORDER[id]*unite) +' '+T('qr')+'</div>';
       line.querySelectorAll('.cl-step button').forEach(function(b){
         b.addEventListener('click', function(){ bump(id, b.getAttribute('data-a')==='inc'?1:-1); });
       });
@@ -4784,7 +4841,7 @@
     var b = sheet.querySelector('[aria-controls="' + pli.id + '"]');
     if(b) b.setAttribute('aria-expanded', on ? 'true' : 'false');
   }
-  ['locMore', 'extrasBtn'].forEach(function(id){
+  ['locMore', 'extrasBtn', 'codeMore'].forEach(function(id){
     $(id).addEventListener('click', function(){
       var pli = $(this.getAttribute('aria-controls'));
       deplier(pli, !pli.classList.contains('on'));
@@ -5158,9 +5215,14 @@
      la porte du code (functions/codes.js) et, sur un « valide », montre le
      prix barré, la ligne du geste et le total baissé — à elle seule.
 
+     Depuis le 17/11/2026 aussi, la proche peut TAPER son code (Samer : « je
+     préfère que le code soit donné à la cliente et la cliente le tape dans le
+     site »). Derrière un lien discret du panier, « Have a code? », replié pour
+     toutes (« Oui, lien discret ») : jamais une case ouverte, qui annoncerait à
+     chaque visiteuse que des prix plus bas existent pour d'autres.
+
      Ce que cette page ne fait JAMAIS, et qui tient à la marque :
-       — aucun champ « code » : sa seule présence annoncerait à chaque
-         visiteuse que des prix plus bas existent pour d'autres ;
+       — aucun mot de remise : ni « promo », ni « discount », ni « coupon » ;
        — rien de changé pour qui n'a pas de lien valable : ni une demande de
          plus, ni un élément, ni un mot — la page est celle d'avant ;
        — rien dans une adresse qu'on partage : le lien de langue pointe vers
@@ -5189,19 +5251,95 @@
      jamais un nom ; en panne, on ne montre rien et la commande part comme
      avant — l'app applique le geste à l'acceptation quoi qu'il arrive. */
   var URL_PORTE_CODE = "https://me-central1-petit-gateau-ab7de.cloudfunctions.net/code";
-  if(INVITATION && URL_PORTE_CODE && typeof fetch === 'function'){
+  /* Ce que dit la ligne sous le champ du code : '' (rien), 'bad' (la porte a
+     dit non à un code TAPÉ) ou 'later' (la porte n'a pas répondu : le code
+     part quand même avec la commande, et l'app décidera). Un code valable
+     n'a pas besoin d'état à lui : c'est GESTE qui le porte. */
+  var CODE_MSG = '';
+  var CODE_TAPE = false;     // la proche a tapé un code (pas seulement suivi un lien)
+  var CODE_OUVERT = false;   // le pli s'ouvre seul UNE fois, puis il est à elle
+  function demanderPorte(code, tape){
+    if(!URL_PORTE_CODE || typeof fetch !== 'function'){
+      if(tape){ retenirCode(code); CODE_MSG = 'later'; peindreCode(); }
+      return;
+    }
+    var go = $('codeGo');
+    if(tape){ CODE_TAPE = true; if(go) go.disabled = true; }
+    var fini = function(){ if(go) go.disabled = false; };
     try{
-      fetch(URL_PORTE_CODE + '?i=' + encodeURIComponent(INVITATION), { cache: 'no-store' })
-        .then(function(r){ return r && r.ok ? r.json() : null; })
+      fetch(URL_PORTE_CODE + '?i=' + encodeURIComponent(code), { cache: 'no-store' })
+        .then(function(r){ return r && r.ok ? r.json() : Promise.reject(new Error('porte')); })
         .then(function(j){
+          fini();
           var montant = j && j.valide === true ? Math.round(Number(j.montant)) : 0;
-          if(!(montant > 0)) return;
+          if(!(montant > 0)){
+            // Un lien qui ne vaut rien : la page reste celle de tout le monde.
+            // Un code TAPÉ qui ne vaut rien : on le dit, et on ne le garde pas
+            // — l'invitation d'avant, s'il y en avait une, reste la bonne.
+            if(tape){ CODE_MSG = 'bad'; peindreCode(); }
+            return;
+          }
+          retenirCode(code);
+          CODE_MSG = '';
           GESTE.montant = montant;
           GESTE.code = true;
           refresh();
         })
-        .catch(function(){ /* rien à montrer : l'app décidera */ });
-    }catch(e){ /* rien à montrer : l'app décidera */ }
+        .catch(function(){
+          fini();
+          // En panne, on ne promet rien. Un code tapé part quand même avec la
+          // commande : l'app l'appliquera à l'acceptation s'il vaut quelque chose.
+          if(tape){ retenirCode(code); CODE_MSG = 'later'; peindreCode(); }
+        });
+    }catch(e){ fini(); }
+  }
+  // Le dernier code retenu l'emporte, pour le dépôt comme pour le message.
+  function retenirCode(code){
+    INVITATION = code;
+    try{ sessionStorage.setItem(INV_CLE, code); }catch(e){}
+  }
+  // Le pli ouvert, le code lisible dedans : la proche arrivée par un lien
+  // voit QUEL code a baissé ses prix.
+  function ouvrirCode(){
+    var pli = $('codeElse'), champ = $('codeIn');
+    if(pli) deplier(pli, true);
+    if(champ && !champ.value) champ.value = invitationLisible();
+  }
+  function peindreCode(){
+    var msg = $('codeMsg');
+    if(!msg) return;
+    var cle = '', ok = false;
+    if(GESTE.code && GESTE.catalogue){
+      // Le pli s'ouvre seul quand le geste se VOIT — jamais avant : sans
+      // catalogue, la page d'une invitée reste celle de tout le monde.
+      if(!CODE_OUVERT){ CODE_OUVERT = true; ouvrirCode(); }
+      ok = true;
+      cle = gesteTotal() > 0 ? 'co_code_ok' : (count() > 0 ? 'co_code_boxes' : '');
+    } else if(CODE_TAPE && (GESTE.code || CODE_MSG === 'later')){
+      // Tapé, mais rien à montrer (catalogue illisible, porte muette) : on
+      // dit qu'il part avec la commande. Un simple lien, lui, ne dit rien.
+      cle = 'co_code_later';
+    } else if(CODE_MSG === 'bad'){
+      cle = 'co_code_bad';
+    }
+    msg.textContent = cle ? T(cle) : '';
+    msg.className = 'code-msg' + (cle ? (ok ? ' ok' : ' non') : '');
+  }
+  if(INVITATION) demanderPorte(INVITATION, false);
+  if($('codeGo')){
+    var appliquer = function(){
+      var code = invitationPropre($('codeIn').value);
+      if(!code){ CODE_MSG = 'bad'; peindreCode(); return; }
+      demanderPorte(code, true);
+    };
+    $('codeGo').addEventListener('click', appliquer);
+    $('codeIn').addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){ e.preventDefault(); appliquer(); }
+    });
+    // Le message d'un code refusé s'efface dès qu'on le corrige.
+    $('codeIn').addEventListener('input', function(){
+      if(CODE_MSG === 'bad'){ CODE_MSG = ''; peindreCode(); }
+    });
   }
   // « K7M2-9QXP » : en deux groupes, comme l'app l'affiche.
   function invitationLisible(){
