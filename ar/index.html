@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261115-1939">
+<meta name="pg-build" content="20261117-1736">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,7 +37,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icone-site-20260909-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icone-site-20260909-512.png">
 <link rel="apple-touch-icon" href="/icone-site-20260909-180.png">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'unsafe-inline'; connect-src https://firestore.googleapis.com; form-action 'none'; frame-ancestors 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'unsafe-inline'; connect-src https://firestore.googleapis.com https://me-central1-petit-gateau-ab7de.cloudfunctions.net; form-action 'none'; frame-ancestors 'none'; base-uri 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="google-site-verification" content="sLGZutcmCAUhPWWQJYqbQLJw86AqBhID5rr3kiyexcc">
 <style>
@@ -704,6 +704,37 @@
   #extrasBtn{margin-top:22px;}
   .more-toggle .opt{font-weight:400;font-size:0.78rem;color:var(--maroon);margin-inline-start:6px;}
   #extras > .gift-toggle{margin-top:14px;}
+
+  /* ================= LE GESTE D'UN CODE PRIVÉ (17/11/2026) =================
+     Vu par la seule proche dont le lien vaut quelque chose (checkout.js,
+     `peindreGeste`) : pour toutes les autres, ces deux éléments n'existent
+     pas. Le prix plein se barre sur sa propre rangée de la ligne du prix,
+     au-dessus du sien et du même côté (à droite en anglais, à gauche en
+     arabe) — à côté, il poussait le nouveau prix hors de la fiche sur un
+     téléphone. */
+  /* `align-content:flex-end` : quand la fiche étire sa ligne de prix (les
+     fiches d'une rangée finissent à la même hauteur), les deux rangées
+     restent collées en bas au lieu de s'écarter — 25 px vus sur ordinateur. */
+  .qty-note.a-geste{flex-wrap:wrap;row-gap:0;align-content:flex-end;}
+  /* À 320 px, « 12 pieces » et le prix passent sur deux lignes : le prix
+     reste alors du côté du prix barré, pas sous le nombre de pièces. */
+  /* Des côtés EXPLICITES, pas `inline-start`/`end` : le prix et le prix barré
+     portent `dir="ltr"` (le montant ne se retourne pas en arabe), et une
+     marge logique se lit dans LEUR sens — sur la page arabe, le prix partait
+     à droite, contre le nombre de pièces. */
+  .qty-note.a-geste .qty-note-p{margin-left:auto;}
+  [dir="rtl"] .qty-note.a-geste .qty-note-p{margin-left:0;margin-right:auto;}
+  [dir="rtl"] .qty-note .prix-plein{text-align:left;}
+  .qty-note .prix-plein{
+    flex:0 0 100%;text-align:right;margin:0 0 -4px;white-space:nowrap;
+    letter-spacing:0;text-transform:none;
+    font-family:var(--police);font-weight:600;font-size:0.82rem;line-height:1.2;
+    color:var(--dusty-rose);
+  }
+  .tl-geste{
+    font-family:var(--police);font-size:0.9rem;font-weight:700;line-height:1.4;
+    color:var(--deep-green);margin:0 0 4px;
+  }
 
 
   /* ================= FINS DE LIGNE ORPHELINES (ordinateur seulement) =========
@@ -3486,7 +3517,8 @@
       co_m_loc:"الموقع",
       co_city:"المدينة",
       co_zoneno:"المنطقة",
-      co_m_inv:"الدعوة"
+      co_m_inv:"الدعوة",
+      co_m_geste:"مع حبّنا، من مطبخنا: {geste}."
     },
     ar: {
       item1_qty:"12 حبة",
@@ -3606,6 +3638,16 @@
   // ranger dans une variable ; il y en a autant que l'offre en déclare, et
   // c'est l'app qui le dit. Le DOM porte donc l'état, une copie de moins.
   var PIECES = {};   // le nombre de pièces par produit, lu au catalogue
+  /* Le geste d'un code privé, VU par la proche (17/11/2026). Zéro pour tout
+     le monde, et la page reste au pixel près celle d'avant ; il ne devient
+     visible que si les TROIS sont vrais : la visite porte un lien privé, la
+     porte du code a répondu « valide » (functions/codes.js), et le catalogue
+     a été lu — c'est lui qui dit quels produits sont des coffrets, et un
+     coffret ne reçoit jamais de geste (règle de l'app « Un code privé est un
+     geste, jamais une remise »). Sans catalogue, on ne montre rien plutôt
+     qu'un geste que l'app retirerait. */
+  var GESTE = { montant: 0, code: false, catalogue: false };
+  var COMPOSES = {};   // les produits que l'app compose d'autres produits (catalogue)
 
   var $ = function(id){ return document.getElementById(id); };
   var orderBar=$('orderBar'), sheet=$('sheet'), veil=$('sheetVeil');
@@ -3961,6 +4003,75 @@
   function count(){
     var c=0; Object.keys(ORDER).forEach(function(id){ c += ORDER[id]; }); return c;
   }
+  // Un coffret, pour le site : une offre du premier écran (`carteDe`), ou un
+  // produit dont le catalogue publie la composition. C'est la même règle que
+  // l'app (`estCoffret`, codes.js : tout produit composé d'autres produits).
+  function estCoffretSite(id){ return Boolean(carteDe(id) || COMPOSES[id]); }
+  // Ce qu'un code retire à UNE unité de ce produit — zéro pour tout le monde
+  // tant que les trois conditions ne sont pas réunies. Jamais plus que le prix,
+  // comme `gesteBorne` dans l'app.
+  function gesteUnite(id){
+    if(!GESTE.code || !GESTE.catalogue || !(GESTE.montant > 0)) return 0;
+    if(estCoffretSite(id)) return 0;
+    return Math.min(GESTE.montant, PRICES[id] || 0);
+  }
+  function gesteTotal(){
+    var t = 0; Object.keys(ORDER).forEach(function(id){ t += ORDER[id] * gesteUnite(id); }); return t;
+  }
+  // « −30 QR », isolé comme les numéros : dans une phrase arabe, le signe et
+  // le nombre se réordonneraient autour de la devise.
+  function moinsQR(n){ return '\u2066\u2212' + n + ' ' + T('qr') + '\u2069'; }
+  // La phrase de la confirmation de l'app, avec son montant. Vide si la langue
+  // n'a pas de phrase : `T()` rendrait le NOM de la clé.
+  function phraseGeste(n){
+    var g = translations.en.co_m_geste || '';
+    return g ? g.replace('{geste}', moinsQR(n)) : '';
+  }
+  /* Le prix VU, sur la fiche et dans le sélecteur. Pour qui n'a pas de geste,
+     rien n'est touché : ni le texte, ni un élément de plus — c'est ce qui
+     garde la page de tout le monde identique à celle d'avant. Pour la proche,
+     le prix plein barré, puis le sien. Le prix plein reste dans `PRICES` : le
+     panier, le message et le dépôt comptent en prix plein, et la ligne du
+     geste dit ce qui est retiré — comme la confirmation de l'app. */
+  function peindreGeste(){
+    document.querySelectorAll('.qty-row[data-item]').forEach(function(row){
+      var id = row.getAttribute('data-item'), g = gesteUnite(id), plein = PRICES[id];
+      var carte = row.closest('.menu-card');
+      var note = carte && carte.querySelector('.qty-note-p');
+      if(note){
+        var barre = carte.querySelector('.prix-plein');
+        if(g > 0){
+          if(!barre){
+            // DANS la ligne du prix, mais sur sa propre rangée au-dessus
+            // (`.a-geste`, checkout.css) : à côté, les deux prix et « 12
+            // pieces » ne tenaient pas dans une fiche de téléphone ; hors de
+            // la ligne, il remontait sous le titre des fiches courtes.
+            barre = document.createElement('s');
+            barre.className = 'prix-plein';
+            barre.setAttribute('dir', 'ltr');
+            note.parentNode.insertBefore(barre, note.parentNode.firstChild);
+            note.parentNode.classList.add('a-geste');
+          }
+          barre.textContent = plein + '\u00a0' + T('qr');
+          note.textContent = (plein - g) + '\u00a0' + T('qr');
+        } else if(barre){
+          barre.parentNode.classList.remove('a-geste');
+          barre.parentNode.removeChild(barre);
+          note.textContent = plein + '\u00a0' + T('qr');
+        }
+      }
+      var unit = document.querySelector('.pk-line[data-pk="' + id + '"] .pk-unit');
+      if(unit){
+        if(g > 0){
+          unit.textContent = (plein - g) + ' ' + T('qr') + ' ' + T('each');
+          unit.setAttribute('data-geste', '1');
+        } else if(unit.getAttribute('data-geste')){
+          unit.removeAttribute('data-geste');
+          unit.textContent = plein + ' ' + T('qr') + ' ' + T('each');
+        }
+      }
+    });
+  }
 
   /* ---------- la livraison : une ESTIMATION, jamais annoncée (17/09/2026) ----
      Du 07/09 au 17/09/2026 ce calcul décidait ce que la cliente VOYAIT : son
@@ -4017,12 +4128,29 @@
   // porteraient le même nombre — deux lignes identiques, c'est du bruit. La
   // ligne sous le montant (`co_deliv_h`) dit ce qui manque encore.
   function peindreTotaux(){
-    $('tGrand').textContent = subtotal() + ' ' + T('qr');
+    var g = gesteTotal();
+    $('tGrand').textContent = (subtotal() - g) + ' ' + T('qr');
+    // La ligne du geste, au-dessus du total, et seulement s'il y en a un :
+    // pour tout le monde, l'élément n'existe même pas.
+    var ligne = $('tGeste');
+    if(g > 0 && phraseGeste(g)){
+      if(!ligne){
+        ligne = document.createElement('p');
+        ligne.id = 'tGeste';
+        ligne.className = 'tl-geste';
+        var grand = $('tGrand').closest('.tl');
+        grand.parentNode.insertBefore(ligne, grand);
+      }
+      ligne.textContent = phraseGeste(g);
+    } else if(ligne){
+      ligne.parentNode.removeChild(ligne);
+    }
   }
 
   function refresh(){
     var c = count(), sub = subtotal(), active = c > 0;
-    $('orderTotal').textContent = sub + ' ' + T('qr');
+    $('orderTotal').textContent = (sub - gesteTotal()) + ' ' + T('qr');
+    peindreGeste();
     // La règle de livraison, dite dès la barre — avant la feuille, pas au fond
     // de celle-ci (24/09/2026, option B de la recherche : aucun montant, la
     // règle du 17/09/2026 intacte). La phrase est celle, déjà validée, du total.
@@ -4893,6 +5021,13 @@
        décision supprime. L'app relit encore les deux libellés pour une
        commande d'AVANT ce jour-là (`ETIQUETTES`, analyseCommande.js). */
     m.push(T('co_m_total') + ': ' + sub + ' ' + T('qr'));
+    /* Le geste VU sur la page, dit dans le message (17/11/2026). Le total
+       au-dessus RESTE celui des produits : c'est lui que l'app relit, et elle
+       retire le geste elle-même à l'acceptation (`gestePour`) — un total déjà
+       baissé ici serait baissé deux fois. Cette ligne-ci, l'app ne la lit pas :
+       elle sert à la proche, qui retrouve dans son message ce qu'elle a vu. */
+    var gesteVu = gesteTotal();
+    if(gesteVu > 0 && phraseGeste(gesteVu)) m.push(phraseGeste(gesteVu));
     m.push('');
     m.push(T('co_m_when') + ': ' + S.date + ' — ' + T('co_slot_' + S.slot));
     // Sans zone, son morceau disparaît : jamais « Zone number · » vide. L'app
@@ -5013,19 +5148,22 @@
     }
   })();
 
-  /* ---------- l'invitation : un lien privé, et rien à l'écran ----------
+  /* ---------- l'invitation : un lien privé, vu de la seule proche ----------
      Tranché par Samer et sa femme le 05/10/2026. Un proche reçoit, de la main
-     à la main, un lien `…/?i=CODE`. Le site ne sait PAS ce que vaut ce code,
-     et ne peut pas le savoir : il ne lit que le catalogue public. Il le
-     TRANSMET — dans le dépôt et dans le message — et c'est l'app qui décide,
-     à l'acceptation. La proche lit son geste dans la confirmation WhatsApp.
+     à la main, un lien `…/?i=CODE`. Le site TRANSMET le code — dans le dépôt
+     et dans le message — et c'est l'app qui décide, à l'acceptation.
 
-     Ce que cette page ne fait donc JAMAIS, et qui tient à la marque :
+     Jusqu'au 17/11/2026, la proche ne voyait RIEN avant la confirmation
+     WhatsApp : le site ne pouvait pas savoir ce que valait le code. Sa femme
+     a demandé qu'elle le voie avant de commander. Depuis, le site demande à
+     la porte du code (functions/codes.js) et, sur un « valide », montre le
+     prix barré, la ligne du geste et le total baissé — à elle seule.
+
+     Ce que cette page ne fait JAMAIS, et qui tient à la marque :
        — aucun champ « code » : sa seule présence annoncerait à chaque
          visiteuse que des prix plus bas existent pour d'autres ;
-       — aucun prix baissé, aucun mot affiché : la page d'une invitée est, au
-         pixel près, celle de tout le monde. Promettre un montant ici, ce
-         serait promettre ce qu'on ne peut pas vérifier (un code déjà servi) ;
+       — rien de changé pour qui n'a pas de lien valable : ni une demande de
+         plus, ni un élément, ni un mot — la page est celle d'avant ;
        — rien dans une adresse qu'on partage : le lien de langue pointe vers
          « /ar/ » sans paramètre, et l'invitation suit par la mémoire de
          l'onglet, comme les UTM.
@@ -5046,6 +5184,26 @@
       return lue;
     }
   })();
+  /* La porte du code (17/11/2026, functions/codes.js). Appelée SEULEMENT si
+     la visite porte un lien privé : les autres clientes ne font aucune demande
+     de plus, et leur page ne change pas. Elle répond oui/non et un montant,
+     jamais un nom ; en panne, on ne montre rien et la commande part comme
+     avant — l'app applique le geste à l'acceptation quoi qu'il arrive. */
+  var URL_PORTE_CODE = "https://me-central1-petit-gateau-ab7de.cloudfunctions.net/code";
+  if(INVITATION && URL_PORTE_CODE && typeof fetch === 'function'){
+    try{
+      fetch(URL_PORTE_CODE + '?i=' + encodeURIComponent(INVITATION), { cache: 'no-store' })
+        .then(function(r){ return r && r.ok ? r.json() : null; })
+        .then(function(j){
+          var montant = j && j.valide === true ? Math.round(Number(j.montant)) : 0;
+          if(!(montant > 0)) return;
+          GESTE.montant = montant;
+          GESTE.code = true;
+          refresh();
+        })
+        .catch(function(){ /* rien à montrer : l'app décidera */ });
+    }catch(e){ /* rien à montrer : l'app décidera */ }
+  }
   // « K7M2-9QXP » : en deux groupes, comme l'app l'affiche.
   function invitationLisible(){
     return INVITATION.length > 4 ? INVITATION.slice(0, 4) + '-' + INVITATION.slice(4) : INVITATION;
@@ -5570,6 +5728,10 @@
       produits.forEach(function(p){
         if(p && p.cle && p.composition) ecrireComposition(String(p.cle), p.composition);
       });
+      // Les produits composés ne reçoivent pas le geste d'un code privé.
+      produits.forEach(function(p){
+        if(p && p.cle && p.composition) COMPOSES[String(p.cle)] = true;
+      });
       // Un cookie retiré de la vente avant que les rangées existent doit être
       // gelé sur celles qui viennent d'être écrites, sinon il redevient
       // choisissable en silence.
@@ -5640,7 +5802,11 @@
         .then(function(j){
           var f = j && j.fields;
           if(!f) return;
+          GESTE.catalogue = true;
           appliquer(valeur(f.produits));
+          // `appliquer` ne repeint rien sur un catalogue vide : le geste,
+          // lui, attendait seulement d'avoir lu la liste des coffrets.
+          if(GESTE.code) refresh();
         })
         .catch(function(){ /* le menu de la page fait foi */ });
     }catch(e){ /* le menu de la page fait foi */ }
