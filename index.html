@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="pg-build" content="20261122-1659">
+<meta name="pg-build" content="20261128-1244">
 <meta name="pg-features" content="carnet,depot,catalogue,jour-meme,heures-fermees,panier-haut">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6131,7 +6131,14 @@
   /* ---------- repli si WhatsApp ne s'ouvre pas ---------- */
   function sendTo(msg){
     var win = null;
-    try { win = window.open('https://wa.me/' + CFG.wa + '?text=' + encodeURIComponent(msg), '_blank', 'noopener'); } catch(e){}
+    // Sans `noopener` dans les options : avec lui, window.open rend TOUJOURS null
+    // (norme HTML), et la carte de secours s'ouvrait après chaque commande, même
+    // quand WhatsApp s'était ouvert (audit du 28/11/2026 ; l'app avait le même
+    // défaut, réglé le 03/11/2026). Le lien vers la page est coupé à la main.
+    try {
+      win = window.open('https://wa.me/' + CFG.wa + '?text=' + encodeURIComponent(msg), '_blank');
+      if (win) { try { win.opener = null; } catch(e){} }
+    } catch(e){}
     if(!win || win.closed || typeof win.closed === 'undefined'){
       document.getElementById('fbMsg').textContent = msg;
       document.getElementById('fallback').classList.add('open');
